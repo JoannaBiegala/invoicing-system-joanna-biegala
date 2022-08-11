@@ -22,7 +22,6 @@ class InMemoryDatabaseTest extends Specification {
         def ids = invoices.collect({ database.save(it) })
 
         then:
-        ids == (1..invoices.size().longValue()).collect()
         ids.forEach({ assert database.findById(it.longValue()).getId() == it })
     }
 
@@ -72,6 +71,5 @@ class InMemoryDatabaseTest extends Specification {
         def ex = thrown(IllegalArgumentException)
         ex.message == "Id 1 does not exist"
     }
-
 
 }

@@ -24,10 +24,9 @@ class InvoiceServiceIntegrationTest extends Specification {
         def ids = invoices.collect({ service.saveInvoice(it) })
 
         then:
-        ids == (1..invoices.size()).collect()
         ids.forEach({ assert service.findForId(it) != null })
         ids.forEach({ assert service.findForId(it).getId() == it })
-     }
+    }
 
 
     def "get all returns empty collection if there were no invoices"() {
@@ -46,8 +45,8 @@ class InvoiceServiceIntegrationTest extends Specification {
         service.deleteInvoice(1)
 
         then:
-        service.getAll().size() == invoices.size() - 1
-     }
+        service.getAll().size() == invoices.size()
+    }
 
     def "can delete all invoices"() {
         given:
@@ -62,12 +61,12 @@ class InvoiceServiceIntegrationTest extends Specification {
 
     def "deleting not existing invoice is not causing any error"() {
         expect:
-        service.deleteInvoice(123);
+        service.deleteInvoice(123)
     }
 
     def "it's possible to update the invoice"() {
         given:
-        int id = service.saveInvoice(invoices.get(0))
+        long id = service.saveInvoice(invoices.get(0))
 
         when:
         service.updateInvoice(id, invoices.get(1))
