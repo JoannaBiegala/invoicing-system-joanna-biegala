@@ -1,10 +1,16 @@
 package pl.futurecollars.invoicing.model;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
-@Builder
+@ToString
+@Getter
+@AllArgsConstructor
 public class Company {
-  public String name;
-  public int taxIdentificationNumber;
-  public String address;
+
+  private String name;
+  private String taxIdentificationNumber;
+  private String address;
+
 }

@@ -1,17 +1,18 @@
 package pl.futurecollars.invoicing.model;
 
 import java.math.BigDecimal;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.ToString;
 
+@ToString
+@Getter
+@AllArgsConstructor
 public class InvoiceEntry {
-  String description;
-  BigDecimal price;
-  BigDecimal vatValue;
-  Vat vatRate;
 
-  public InvoiceEntry(String description, BigDecimal price, BigDecimal vatValue, Vat vatRate) {
-    this.description = description;
-    this.price = price;
-    this.vatValue = vatValue;
-    this.vatRate = vatRate;
-  }
+  private String description;
+  private BigDecimal price;
+  private BigDecimal vatValue;
+  private Vat vatRate;
+
 }
