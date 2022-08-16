@@ -45,7 +45,7 @@ class InvoiceServiceIntegrationTest extends Specification {
         service.deleteInvoice(1)
 
         then:
-        service.getAll().size() == invoices.size()
+        service.getAll().size() == invoices.size() - 1
     }
 
     def "can delete all invoices"() {
@@ -64,7 +64,27 @@ class InvoiceServiceIntegrationTest extends Specification {
         service.deleteInvoice(123)
     }
 
-    def "it's possible to update the invoice"() {
+    def "updating not existing invoice throws exception"() {
+        when:
+        service.updateInvoice(213, invoices.get(1))
+
+        then:
+        def ex = thrown(IllegalArgumentException)
+        ex.message == "Id 213 does not exist"
+    }
+
+    def "unit test: find for id invoice"() {
+        given:
+        long id = service.saveInvoice(invoices.get(0))
+
+        when:
+        Invoice invoice = service.findForId(id)
+
+        then:
+        invoice == invoices.get(0)
+    }
+
+    def "unit test: update the invoice"() {
         given:
         long id = service.saveInvoice(invoices.get(0))
 
@@ -75,13 +95,15 @@ class InvoiceServiceIntegrationTest extends Specification {
         service.findForId(id) == invoices.get(1)
     }
 
-    def "updating not existing invoice throws exception"() {
+    def "unit test: delete the invoice"() {
+        given:
+        long id = service.saveInvoice(invoices.get(0))
+
         when:
-        service.updateInvoice(213, invoices.get(1))
+        service.deleteInvoice(id)
 
         then:
-        def ex = thrown(IllegalArgumentException)
-        ex.message == "Id 213 does not exist"
+        service.all.isEmpty()
     }
 
 }

@@ -9,7 +9,7 @@ import pl.futurecollars.invoicing.model.Invoice;
 
 public class InMemoryDatabase implements Database {
 
-  private static long index = 1;
+  private long index = 1;
   private final Map<Long, Invoice> invoices = new HashMap<>();
 
   @Override
