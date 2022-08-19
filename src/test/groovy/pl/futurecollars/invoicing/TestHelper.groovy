@@ -19,12 +19,8 @@ class TestHelpers {
         new InvoiceEntry("Programming course $id", BigDecimal.valueOf(id * 1000), BigDecimal.valueOf(id * 1000 * 0.08), Vat.VAT_8)
     }
 
-    static invoice(int id) {
-         Invoice.builder()
-                .date(LocalDate.now())
-                .fromCompany(company(id))
-                .toCompany(company(id))
-                .invoiceEntries(List.of(product(id)))
-                .build()
+    static invoice(long id) {
+        new Invoice(id,LocalDate.now(), company(id.toInteger()), company(id.toInteger()),  List.of(product(id.toInteger())))
+
     }
 }
