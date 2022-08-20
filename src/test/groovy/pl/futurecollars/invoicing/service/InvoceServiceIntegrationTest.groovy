@@ -73,7 +73,7 @@ class InvoiceServiceIntegrationTest extends Specification {
         ex.message == "Id 213 does not exist"
     }
 
-    def "unit test: find for id invoice"() {
+    def "find for id invoice"() {
         given:
         long id = service.saveInvoice(invoices.get(0))
 
@@ -84,7 +84,7 @@ class InvoiceServiceIntegrationTest extends Specification {
         invoice == invoices.get(0)
     }
 
-    def "unit test: update the invoice"() {
+    def "update the invoice"() {
         given:
         long id = service.saveInvoice(invoices.get(0))
 
@@ -95,7 +95,7 @@ class InvoiceServiceIntegrationTest extends Specification {
         service.findForId(id) == invoices.get(1)
     }
 
-    def "unit test: delete the invoice"() {
+    def "delete the invoice"() {
         given:
         long id = service.saveInvoice(invoices.get(0))
 
