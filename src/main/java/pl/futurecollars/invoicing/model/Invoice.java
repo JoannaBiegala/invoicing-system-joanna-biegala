@@ -2,14 +2,15 @@ package pl.futurecollars.invoicing.model;
 
 import java.time.LocalDate;
 import java.util.List;
-import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
 @ToString
 @Getter
-@Builder
+@Setter
+@NoArgsConstructor
 public class Invoice {
 
   @Setter
@@ -18,5 +19,12 @@ public class Invoice {
   private Company fromCompany;
   private Company toCompany;
   private List<InvoiceEntry> invoiceEntries;
+
+  public Invoice(LocalDate date, Company fromCompany, Company toCompany, List<InvoiceEntry> invoiceEntries) {
+    this.date = date;
+    this.fromCompany = fromCompany;
+    this.toCompany = toCompany;
+    this.invoiceEntries = invoiceEntries;
+  }
 
 }

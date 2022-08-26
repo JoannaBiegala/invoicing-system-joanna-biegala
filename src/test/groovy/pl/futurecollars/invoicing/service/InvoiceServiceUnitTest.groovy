@@ -18,7 +18,7 @@ class InvoiceServiceUnitTest extends Specification {
 
     def "calling save() should delegate to database save() method"() {
         given:
-        def invoiceId = 1L
+        def invoiceId = 1
         def invoice = invoice(invoiceId)
         when:
         service.saveInvoice(invoice)
@@ -28,16 +28,16 @@ class InvoiceServiceUnitTest extends Specification {
 
     def "calling delete() should delegate to database delete() method"() {
         given:
-        def invoiceId = 12L
+        def invoiceId = 12
         when:
         service.deleteInvoice(invoiceId)
         then:
         1 * database.delete(invoiceId)
     }
 
-    def "calling getById() should delegate to database getById() method"() {
+    def "calling findForId() should delegate to database findForId() method"() {
         given:
-        def invoiceId = 21L
+        def invoiceId = 21
         when:
         service.findForId(invoiceId)
         then:
@@ -53,7 +53,7 @@ class InvoiceServiceUnitTest extends Specification {
 
     def "calling update() should delegate to database update() method"() {
         given:
-        def invoice = invoice(1L)
+        def invoice = invoice(1)
         when:
         service.updateInvoice(invoice.getId(), invoice)
         then:
