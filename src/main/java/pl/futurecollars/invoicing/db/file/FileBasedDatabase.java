@@ -12,17 +12,22 @@ import pl.futurecollars.invoicing.utils.JsonService;
 
 public class FileBasedDatabase implements Database {
 
-  private final Path databasePath;
   private final FilesService filesService;
   private final JsonService jsonService;
   private final IdService idService;
+
+  private final Path databasePath;
+  private final Path idPath;
 
   public FileBasedDatabase(FilesService filesService, JsonService jsonService, IdService idService) throws IOException {
     this.filesService = filesService;
     this.jsonService = jsonService;
     this.idService = idService;
-    databasePath = Path.of(Configuration.DATABASE_FILE);
-    filesService.createRepository(Path.of(Configuration.ID_FILE), databasePath);
+    this.databasePath = Path.of(Configuration.DATABASE_FILE);
+    this.idPath = Path.of(Configuration.ID_FILE);
+    filesService.initDatabase(idPath, databasePath);
+    filesService.writeToFile(idPath, String.valueOf(0L));
+
   }
 
   @Override
@@ -64,6 +69,7 @@ public class FileBasedDatabase implements Database {
       invoice.setDate(updatedInvoice.getDate());
       invoice.setFromCompany(updatedInvoice.getFromCompany());
       invoice.setToCompany(updatedInvoice.getToCompany());
+      invoice.setInvoiceEntries(updatedInvoice.getInvoiceEntries());
 
       allInvoices.add(jsonService.toJson(invoice));
       filesService.writeLinesToFile(databasePath, allInvoices);

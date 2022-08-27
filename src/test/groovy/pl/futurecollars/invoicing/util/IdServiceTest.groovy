@@ -14,8 +14,6 @@ class IdServiceTest extends Specification {
 
     def "current id if file was empty"() {
         given:
-        FilesService filesService = new FilesService()
-        filesService.createRepository(idPath, Path.of(Configuration.DATABASE_FILE))
         IdService idService = new IdService(new FilesService())
 
         expect:
@@ -45,17 +43,16 @@ class IdServiceTest extends Specification {
 
     def "current id if it isn't file"() {
         given:
-        FilesService filesService = new FilesService()
         IdService idService = new IdService(new FilesService())
 
         expect:
+        1 == idService.getCurrentIdAndIncrement()
+
+        and:
         2 == idService.getCurrentIdAndIncrement()
 
         and:
         3 == idService.getCurrentIdAndIncrement()
-
-        and:
-        4 == idService.getCurrentIdAndIncrement()
     }
 
     def cleanup() {

@@ -9,22 +9,16 @@ import java.util.List;
 
 public class FilesService {
 
-  public void createRepository(Path idPath, Path databasePath) throws IOException {
-    createIdPathRepository(idPath);
-    createDatabasePathRepository(databasePath);
+  public void initDatabase(Path idPath, Path databasePath) throws IOException {
+    createFile(idPath);
+    createFile(databasePath);
   }
 
-  private void createIdPathRepository(Path idPath) throws IOException {
+  private void createFile(Path idPath) throws IOException {
     File file = new File(idPath.toString());
     file.getParentFile().mkdirs();
     file.createNewFile();
-    writeToFile(idPath, String.valueOf(0L));
-  }
 
-  private void createDatabasePathRepository(Path databasePath) throws IOException {
-    File databaseFile = new File(databasePath.toString());
-    databaseFile.getParentFile().mkdirs();
-    databaseFile.createNewFile();
   }
 
   public void appendLineToFile(Path path, String line) throws IOException {
