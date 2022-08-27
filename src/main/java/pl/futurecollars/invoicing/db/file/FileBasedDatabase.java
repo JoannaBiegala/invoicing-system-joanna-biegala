@@ -15,19 +15,23 @@ public class FileBasedDatabase implements Database {
   private final FilesService filesService;
   private final JsonService jsonService;
   private final IdService idService;
-
   private final Path databasePath;
   private final Path idPath;
 
-  public FileBasedDatabase(FilesService filesService, JsonService jsonService, IdService idService) throws IOException {
+  public FileBasedDatabase(Path databasePath, Path idPath, FilesService filesService, JsonService jsonService, IdService idService)
+      throws IOException {
     this.filesService = filesService;
     this.jsonService = jsonService;
     this.idService = idService;
-    this.databasePath = Path.of(Configuration.DATABASE_FILE);
-    this.idPath = Path.of(Configuration.ID_FILE);
-    filesService.initDatabase(idPath, databasePath);
+    this.databasePath = databasePath;
+    this.idPath = idPath;
+    initDatabaseFiles(databasePath.toString(), idPath.toString());
     filesService.writeToFile(idPath, String.valueOf(0L));
+  }
 
+  public void initDatabaseFiles(String databasePath, String idPath) throws IOException {
+    filesService.createFile(databasePath);
+    filesService.createFile(idPath);
   }
 
   @Override

@@ -3,7 +3,6 @@ package pl.futurecollars.invoicing.utils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import pl.futurecollars.invoicing.db.file.Configuration;
 
 public class IdService {
 
@@ -13,16 +12,17 @@ public class IdService {
 
   private long currentId;
 
-  public IdService(FilesService filesService) {
+  public IdService(Path databasePath, Path idPath, FilesService filesService) {
     this.filesService = filesService;
-    this.idPath = Path.of(Configuration.ID_FILE);
-    this.databasePath = Path.of(Configuration.DATABASE_FILE);
+    this.databasePath = databasePath;
+    this.idPath = idPath;
     this.currentId = 0L;
     try {
       if (Files.exists(idPath)) {
         currentId = Long.parseLong(filesService.readLine(idPath));
       } else {
-        filesService.initDatabase(idPath, databasePath);
+        filesService.createFile(databasePath.toString());
+        filesService.createFile(idPath.toString());
       }
     } catch (IOException e) {
       throw new RuntimeException(e);

@@ -7,14 +7,16 @@ import spock.lang.Specification
 
 import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.Paths
 
 class IdServiceTest extends Specification {
 
-    private Path idPath = Path.of(Configuration.ID_FILE)
+    private final Path databasePath = Paths.get(Configuration.DATABASE_FILE)
+    private final Path idPath = Paths.get(Configuration.ID_FILE)
 
     def "current id if file was empty"() {
         given:
-        IdService idService = new IdService(new FilesService())
+        IdService idService = new IdService(databasePath,idPath,new FilesService())
 
         expect:
         1 == idService.getCurrentIdAndIncrement()
@@ -29,7 +31,7 @@ class IdServiceTest extends Specification {
     def "current id from last number if file was not empty"() {
         given:
         Files.writeString(idPath, "16")
-        IdService idService = new IdService(new FilesService())
+        IdService idService = new IdService(databasePath,idPath, new FilesService())
 
         expect:
         17 == idService.getCurrentIdAndIncrement()
@@ -43,7 +45,7 @@ class IdServiceTest extends Specification {
 
     def "current id if it isn't file"() {
         given:
-        IdService idService = new IdService(new FilesService())
+        IdService idService = new IdService(databasePath,idPath,new FilesService())
 
         expect:
         1 == idService.getCurrentIdAndIncrement()

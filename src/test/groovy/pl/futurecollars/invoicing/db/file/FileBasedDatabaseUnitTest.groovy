@@ -16,6 +16,7 @@ import static pl.futurecollars.invoicing.TestHelpers.invoice
 class FileBasedDatabaseUnitTest extends Specification {
 
     private final Path databasePath = Paths.get(Configuration.DATABASE_FILE)
+    private final Path idPath = Paths.get(Configuration.ID_FILE)
     private final FilesService filesServiceMock = Mock(FilesService)
     private final JsonService jsonServiceMock = Mock(JsonService)
     private final IdService idService = Mock(IdService)
@@ -23,7 +24,7 @@ class FileBasedDatabaseUnitTest extends Specification {
     private Database database
 
     def setup() {
-        database = new FileBasedDatabase(filesServiceMock, jsonServiceMock, idService)
+        database = new FileBasedDatabase(databasePath, idPath, filesServiceMock, jsonServiceMock, idService)
 
     }
 

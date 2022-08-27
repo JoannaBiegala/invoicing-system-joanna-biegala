@@ -9,13 +9,8 @@ import java.util.List;
 
 public class FilesService {
 
-  public void initDatabase(Path idPath, Path databasePath) throws IOException {
-    createFile(idPath);
-    createFile(databasePath);
-  }
-
-  private void createFile(Path idPath) throws IOException {
-    File file = new File(idPath.toString());
+  public void createFile(String idPath) throws IOException {
+    File file = new File(idPath);
     file.getParentFile().mkdirs();
     file.createNewFile();
 
