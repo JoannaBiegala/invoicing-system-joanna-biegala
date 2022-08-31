@@ -17,7 +17,7 @@ public class InvoiceService {
     return database.save(invoice);
   }
 
-  public Optional<Invoice> get(long id) {
+  public Optional<Invoice> getById(long id) {
     return database.get(id);
   }
 

@@ -61,7 +61,7 @@ class FileBasedDatabaseUnitTest extends Specification {
         database.get(1L)
         then:
         def exception = thrown(RuntimeException)
-        exception.message == "Database failed to get invoice with id: 1"
+        exception.message == "Database failed to getById invoice with id: 1"
     }
 
     def "should throw exception when readAllLine() in getAll() fails"() {

@@ -24,13 +24,13 @@ class InvoiceServiceIntegrationTest extends Specification {
         def ids = invoices.collect({ service.save(it) })
 
         then:
-        ids.forEach({ assert service.get(it) != null })
-        ids.forEach({ assert service.get(it).getId() == it })
+        ids.forEach({ assert service.getById(it) != null })
+        ids.forEach({ assert service.getById(it).getId() == it })
     }
 
     def "should get by id returns null when there is no invoice with given id"() {
         expect:
-        service.get(1) == null
+        service.getById(1) == null
     }
 
     def "should get all returns empty collection if there were no invoices"() {
@@ -74,7 +74,7 @@ class InvoiceServiceIntegrationTest extends Specification {
         when:
         service.update(id, invoices.get(1))
         then:
-        service.get(id).get() == invoices.get(1)
+        service.getById(id).get() == invoices.get(1)
     }
 
     def "should updating not existing invoice throws exception"() {
@@ -91,7 +91,7 @@ class InvoiceServiceIntegrationTest extends Specification {
         long id = service.save(invoices.get(0))
 
         when:
-        Invoice invoice = service.get(id).get()
+        Invoice invoice = service.getById(id).get()
 
         then:
         invoice == invoices.get(0)

@@ -49,7 +49,7 @@ public class FileBasedDatabase implements Database {
           .map(line -> jsonService.toObject(line, Invoice.class))
           .findFirst();
     } catch (IOException ex) {
-      throw new RuntimeException("Database failed to get invoice with id: " + id, ex);
+      throw new RuntimeException("Database failed to getById invoice with id: " + id, ex);
     }
   }
 

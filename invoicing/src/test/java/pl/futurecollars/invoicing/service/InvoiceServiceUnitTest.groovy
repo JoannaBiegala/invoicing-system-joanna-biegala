@@ -39,7 +39,7 @@ class InvoiceServiceUnitTest extends Specification {
         given:
         def invoiceId = 21
         when:
-        service.get(invoiceId)
+        service.getById(invoiceId)
         then:
         1 * database.get(invoiceId)
     }
