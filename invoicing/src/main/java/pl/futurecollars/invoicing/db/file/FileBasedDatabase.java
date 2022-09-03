@@ -1,6 +1,7 @@
 package pl.futurecollars.invoicing.db.file;
 
 import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
@@ -18,14 +19,22 @@ public class FileBasedDatabase implements Database {
   private final IdService idService;
   private final Path databasePath;
 
-  public FileBasedDatabase(Path databasePath, FilesService filesService, JsonService jsonService, IdService idService)
-      throws IOException {
+  public FileBasedDatabase(Path databasePath, FilesService filesService, JsonService jsonService, IdService idService) {
     this.filesService = filesService;
     this.jsonService = jsonService;
     this.idService = idService;
     this.databasePath = databasePath;
-    filesService.createFile(databasePath.toString());
-    idService.writeToFile(0L);
+    initialize();
+  }
+
+  private void initialize() {
+    if (!Files.exists(databasePath)) {
+      try {
+        filesService.createFile(databasePath.toString());
+      } catch (IOException e) {
+        throw new RuntimeException("Unable to initialize database path", e);
+      }
+    }
   }
 
   @Override

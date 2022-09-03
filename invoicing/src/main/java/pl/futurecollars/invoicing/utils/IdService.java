@@ -14,20 +14,20 @@ public class IdService {
     this.filesService = filesService;
     this.idPath = idPath;
     this.currentId = 0L;
+    initialize();
+  }
+
+  private void initialize() {
     try {
       if (Files.exists(idPath)) {
         currentId = Long.parseLong(filesService.readLine(idPath));
       } else {
         filesService.createFile(idPath.toString());
+        filesService.writeToFile(idPath, String.valueOf(0L));
       }
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      throw new RuntimeException("Unable to initialize id path", e);
     }
-
-  }
-
-  public void writeToFile(long id) throws IOException {
-    filesService.writeToFile(idPath, String.valueOf(id));
   }
 
   public long getCurrentIdAndIncrement() {
@@ -35,7 +35,7 @@ public class IdService {
       currentId++;
       filesService.writeToFile(idPath, String.valueOf(currentId));
     } catch (IOException e) {
-      throw new RuntimeException("Unable to initialize repository", e);
+      throw new RuntimeException("Unable to get current ID", e);
     }
     return currentId;
   }
