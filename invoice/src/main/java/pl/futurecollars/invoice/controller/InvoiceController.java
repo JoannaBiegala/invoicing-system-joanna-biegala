@@ -21,7 +21,6 @@ public class InvoiceController {
 
   @GetMapping("/invoices/{id}")
   public ResponseEntity<Invoice> getInvoice(@PathVariable long id) {
-
     return ResponseEntity.of(Optional.ofNullable(invoiceService.findForId(id)));
   }
 
