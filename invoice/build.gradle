@@ -84,8 +84,8 @@ jacocoTestReport {
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
-					"pl.futurecollars.invoice.controller.*"
-			])
+					"pl/futurecollars/invoicing/controller/*",
+					"pl/futurecollars/invoicing/InvoiceApplication*"		])
 		}))
 	}
 }
