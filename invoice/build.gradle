@@ -78,16 +78,16 @@ test {
 	finalizedBy jacocoTestCoverageVerification
 }
 
-/*jacocoTestReport {
+jacocoTestReport {
 	dependsOn test // tests are required to run before generating the report
 
 	afterEvaluate {
 		classDirectories.setFrom(files(classDirectories.files.collect {
 			fileTree(dir: it, exclude: [
-					"pl.futurecollars.invoice.controller.InvoiceController.class"
+					"pl.futurecollars.invoice.controller.*"
 			])
 		}))
 	}
-}*/
+}
 
 sourceCompatibility = 1.14
