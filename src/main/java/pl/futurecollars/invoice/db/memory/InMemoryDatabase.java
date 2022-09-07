@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import pl.futurecollars.invoice.db.Database;
 import pl.futurecollars.invoice.model.Invoice;
 
@@ -21,14 +22,14 @@ public class InMemoryDatabase implements Database {
   }
 
   @Override
-  public Invoice findById(long id) {
-    return invoices.get(id);
+  public Optional<Invoice> findById(long id) {
+    return Optional.ofNullable(invoices.get(id));
   }
 
   @Override
   public void update(long id, Invoice invoice) {
-    Invoice saved = findById(id);
-    if (saved == null) {
+    Optional<Invoice> saved = findById(id);
+    if (saved.isEmpty()) {
       throw new IllegalArgumentException("Id " + id + " does not exist");
     }
     invoice.setId(id);

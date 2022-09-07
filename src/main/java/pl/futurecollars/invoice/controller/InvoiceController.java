@@ -1,7 +1,6 @@
 package pl.futurecollars.invoice.controller;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,7 +20,7 @@ public class InvoiceController {
 
   @GetMapping("/invoices/{id}")
   public ResponseEntity<Invoice> getInvoice(@PathVariable long id) {
-    return ResponseEntity.of(Optional.ofNullable(invoiceService.findForId(id)));
+    return ResponseEntity.of(invoiceService.findForId(id));
   }
 
   @GetMapping("/invoices")
@@ -35,13 +34,21 @@ public class InvoiceController {
   }
 
   @DeleteMapping("/invoices/{id}")
-  public void deleteById(@PathVariable long id) {
-    invoiceService.deleteInvoice(id);
+  public ResponseEntity<?> deleteInvoice(@PathVariable long id) {
+    if (this.invoiceService.deleteInvoice(id)) {
+      return ResponseEntity.ok().build();
+    } else {
+      return ResponseEntity.notFound().build();
+    }
   }
 
   @PutMapping("/invoices/{id}")
-  public void update(@PathVariable long id, @RequestBody Invoice invoice) {
-    invoiceService.updateInvoice(id, invoice);
+  public ResponseEntity<?> updateInvoice(@RequestBody Invoice invoice, @PathVariable long id) {
+    if (this.invoiceService.updateInvoice(id, invoice)) {
+      return ResponseEntity.ok().build();
+    } else {
+      return ResponseEntity.notFound().build();
+    }
   }
 
 }

@@ -19,13 +19,13 @@ class IdServiceTest extends Specification {
         IdService idService = new IdService(databasePath,idPath,new FilesService())
 
         expect:
-        1 == idService.getCurrentIdAndIncrement()
+        1L == idService.getCurrentIdAndIncrement()
 
         and:
-        2 == idService.getCurrentIdAndIncrement()
+        2L == idService.getCurrentIdAndIncrement()
 
         and:
-        3 == idService.getCurrentIdAndIncrement()
+        3L == idService.getCurrentIdAndIncrement()
     }
 
     def "current id from last number if file was not empty"() {
@@ -34,13 +34,13 @@ class IdServiceTest extends Specification {
         IdService idService = new IdService(databasePath,idPath, new FilesService())
 
         expect:
-        17 == idService.getCurrentIdAndIncrement()
+        17L == idService.getCurrentIdAndIncrement()
 
         and:
-        18 == idService.getCurrentIdAndIncrement()
+        18L == idService.getCurrentIdAndIncrement()
 
         and:
-        19 == idService.getCurrentIdAndIncrement()
+        19L == idService.getCurrentIdAndIncrement()
     }
 
     def "current id if it isn't file"() {
@@ -48,13 +48,13 @@ class IdServiceTest extends Specification {
         IdService idService = new IdService(databasePath,idPath,new FilesService())
 
         expect:
-        1 == idService.getCurrentIdAndIncrement()
+        1L == idService.getCurrentIdAndIncrement()
 
         and:
-        2 == idService.getCurrentIdAndIncrement()
+        2L == idService.getCurrentIdAndIncrement()
 
         and:
-        3 == idService.getCurrentIdAndIncrement()
+        3L == idService.getCurrentIdAndIncrement()
     }
 
     def cleanup() {

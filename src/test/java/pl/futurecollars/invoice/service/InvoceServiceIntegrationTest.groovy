@@ -74,7 +74,7 @@ class InvoiceServiceIntegrationTest extends Specification {
         when:
         service.updateInvoice(id, invoices.get(1))
         then:
-        service.findForId(id) == invoices.get(1)
+        service.findForId(id).get() == invoices.get(1)
     }
 
     def "should updating not existing invoice throws exception"() {
@@ -91,7 +91,7 @@ class InvoiceServiceIntegrationTest extends Specification {
         long id = service.saveInvoice(invoices.get(0))
 
         when:
-        Invoice invoice = service.findForId(id)
+        Invoice invoice = service.findForId(id).get()
 
         then:
         invoice == invoices.get(0)
