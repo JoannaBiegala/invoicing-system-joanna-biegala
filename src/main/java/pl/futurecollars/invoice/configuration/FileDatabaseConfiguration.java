@@ -1,16 +1,17 @@
-package pl.futurecollars.invoice.db.file;
+package pl.futurecollars.invoice.configuration;
 
 import java.io.IOException;
 import java.nio.file.Path;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.futurecollars.invoice.db.Database;
+import pl.futurecollars.invoice.db.file.FileRepository;
 import pl.futurecollars.invoice.utils.FilesService;
 import pl.futurecollars.invoice.utils.IdService;
 import pl.futurecollars.invoice.utils.JsonService;
 
 @Configuration
-public class DatabaseConfiguration {
+public class FileDatabaseConfiguration {
 
   public static final String ID_FILE = "test_db/nextId.txt";
   public static final String DATABASE_FILE = "test_db/invoices.json";
