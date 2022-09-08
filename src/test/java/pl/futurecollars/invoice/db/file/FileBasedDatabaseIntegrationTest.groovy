@@ -18,7 +18,7 @@ class FileBasedDatabaseIntegrationTest extends AbstractDatabaseTest {
     private final Path idPath = Paths.get(FileDatabaseConfiguration.ID_FILE)
 
     def setup() {
-        database = new FileRepository(databasePath, new FilesService(), new JsonService(), new IdService(databasePath, idPath,new FilesService()))
+        database = new FileRepository(databasePath, new FilesService(), new JsonService(), new IdService(idPath, new FilesService()))
     }
 
     def "should file based database writes invoices to correct file"() {
