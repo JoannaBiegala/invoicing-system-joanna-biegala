@@ -1,4 +1,4 @@
-package pl.futurecollars.invoice.configuration;
+package pl.futurecollars.invoice.db.file;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -13,8 +13,8 @@ import pl.futurecollars.invoice.utils.JsonService;
 @Configuration
 public class FileDatabaseConfiguration {
 
-  public static final String ID_FILE = "test_db/nextId.txt";
-  public static final String DATABASE_FILE = "test_db/invoices.json";
+  private static final String ID_FILE = "test_db/nextId.txt";
+  private static final String DATABASE_FILE = "test_db/invoices.json";
 
   @Bean
   public IdService idService(FilesService filesService) throws IOException {

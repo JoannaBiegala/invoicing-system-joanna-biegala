@@ -1,6 +1,6 @@
 package pl.futurecollars.invoice.db.file
 
-import pl.futurecollars.invoice.configuration.FileDatabaseConfiguration
+
 import pl.futurecollars.invoice.db.AbstractDatabaseTest
 import pl.futurecollars.invoice.utils.FilesService
 import pl.futurecollars.invoice.utils.IdService
@@ -14,8 +14,8 @@ import static pl.futurecollars.invoice.TestHelpers.invoice
 
 class FileBasedDatabaseIntegrationTest extends AbstractDatabaseTest {
 
-    private final Path databasePath = Paths.get(FileDatabaseConfiguration.DATABASE_FILE)
-    private final Path idPath = Paths.get(FileDatabaseConfiguration.ID_FILE)
+    private final Path databasePath = Paths.get(FileDatabaseConfiguration.DatabaseFile)
+    private final Path idPath = Paths.get(FileDatabaseConfiguration.IdFile)
 
     def setup() {
         database = new FileRepository(databasePath, new FilesService(), new JsonService(), new IdService(idPath, new FilesService()))

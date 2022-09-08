@@ -5,12 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 import pl.futurecollars.invoice.db.Database;
 import pl.futurecollars.invoice.model.Invoice;
 
-@Primary
 @Repository
 public class MemoryRepository implements Database {
 

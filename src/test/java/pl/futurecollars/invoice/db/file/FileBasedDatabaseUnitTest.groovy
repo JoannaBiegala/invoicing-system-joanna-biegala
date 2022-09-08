@@ -1,7 +1,6 @@
 package pl.futurecollars.invoice.db.file
 
 import pl.futurecollars.invoice.TestHelpers
-import pl.futurecollars.invoice.configuration.FileDatabaseConfiguration
 import pl.futurecollars.invoice.db.Database
 import pl.futurecollars.invoice.model.Invoice
 import pl.futurecollars.invoice.utils.FilesService
@@ -16,8 +15,8 @@ import static pl.futurecollars.invoice.TestHelpers.invoice
 
 class FileBasedDatabaseUnitTest extends Specification {
 
-    private final Path databasePath = Paths.get(FileDatabaseConfiguration.DATABASE_FILE)
-    private final Path idPath = Paths.get(FileDatabaseConfiguration.ID_FILE)
+    private final Path databasePath = Paths.get(FileDatabaseConfiguration.DatabaseFile)
+    private final Path idPath = Paths.get(FileDatabaseConfiguration.IdFile)
     private final FilesService filesServiceMock = Mock(FilesService)
     private final JsonService jsonServiceMock = Mock(JsonService)
     private final IdService idService = Mock(IdService)

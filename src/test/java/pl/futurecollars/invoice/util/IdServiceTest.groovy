@@ -1,6 +1,6 @@
 package pl.futurecollars.invoice.util
 
-import pl.futurecollars.invoice.configuration.FileDatabaseConfiguration
+import pl.futurecollars.invoice.db.file.FileDatabaseConfiguration
 import pl.futurecollars.invoice.utils.FilesService
 import pl.futurecollars.invoice.utils.IdService
 import spock.lang.Specification
@@ -11,8 +11,8 @@ import java.nio.file.Paths
 
 class IdServiceTest extends Specification {
 
-    private final Path databasePath = Paths.get(FileDatabaseConfiguration.DATABASE_FILE)
-    private final Path idPath = Paths.get(FileDatabaseConfiguration.ID_FILE)
+    private final Path databasePath = Paths.get(FileDatabaseConfiguration.DatabaseFile)
+    private final Path idPath = Paths.get(FileDatabaseConfiguration.IdFile)
 
     def "current id if file was empty"() {
         given:
