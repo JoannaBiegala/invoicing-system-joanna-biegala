@@ -10,7 +10,6 @@ plugins {
 
 group = 'pl.futurecollars'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '14'
 
 configurations {
     compileOnly {
@@ -90,5 +89,3 @@ jacocoTestReport {
         }))
     }
 }
-
-sourceCompatibility = 1.14

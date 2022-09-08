@@ -5,10 +5,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.springframework.context.annotation.Primary;
+import org.springframework.stereotype.Repository;
 import pl.futurecollars.invoice.db.Database;
 import pl.futurecollars.invoice.model.Invoice;
 
-public class InMemoryDatabase implements Database {
+@Primary
+@Repository
+public class MemoryRepository implements Database {
 
   private long index = 1;
   private final Map<Long, Invoice> invoices = new HashMap<>();

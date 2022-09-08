@@ -13,11 +13,11 @@ import static pl.futurecollars.invoice.TestHelpers.invoice
 
 class FileBasedDatabaseIntegrationTest extends AbstractDatabaseTest {
 
-    private final Path databasePath = Paths.get(Configuration.DATABASE_FILE)
-    private final Path idPath = Paths.get(Configuration.ID_FILE)
+    private final Path databasePath = Paths.get(DatabaseConfiguration.DATABASE_FILE)
+    private final Path idPath = Paths.get(DatabaseConfiguration.ID_FILE)
 
     def setup() {
-        database = new FileBasedDatabase(databasePath, idPath, new FilesService(), new JsonService(), new IdService(databasePath, idPath,new FilesService()))
+        database = new FileRepository(databasePath, new FilesService(), new JsonService(), new IdService(databasePath, idPath,new FilesService()))
     }
 
     def "should file based database writes invoices to correct file"() {

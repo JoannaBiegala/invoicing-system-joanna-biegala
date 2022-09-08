@@ -15,8 +15,8 @@ import static pl.futurecollars.invoice.TestHelpers.invoice
 
 class FileBasedDatabaseUnitTest extends Specification {
 
-    private final Path databasePath = Paths.get(Configuration.DATABASE_FILE)
-    private final Path idPath = Paths.get(Configuration.ID_FILE)
+    private final Path databasePath = Paths.get(DatabaseConfiguration.DATABASE_FILE)
+    private final Path idPath = Paths.get(DatabaseConfiguration.ID_FILE)
     private final FilesService filesServiceMock = Mock(FilesService)
     private final JsonService jsonServiceMock = Mock(JsonService)
     private final IdService idService = Mock(IdService)
@@ -24,8 +24,7 @@ class FileBasedDatabaseUnitTest extends Specification {
     private Database database
 
     def setup() {
-        database = new FileBasedDatabase(databasePath, idPath, filesServiceMock, jsonServiceMock, idService)
-
+        database = new FileRepository(databasePath, filesServiceMock, jsonServiceMock, idService)
     }
 
     def "should throw exception when appendLineToFile() in save() fails"() {
