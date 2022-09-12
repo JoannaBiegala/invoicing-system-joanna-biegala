@@ -59,7 +59,7 @@ class IdServiceTest extends Specification {
     def "should throw exception when initializing IdService fails"() {
         given:
         filesService.createFile("test_db/nextId.txt") >> idPath
-        filesService.createFile(idPath.toString()) >> {throw new IOException()}
+        filesService.createFile(idPath.toString()) >> { throw new IOException() }
 
         when:
         new FileDatabaseConfiguration().idService(filesService)
