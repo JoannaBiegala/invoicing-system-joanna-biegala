@@ -56,19 +56,6 @@ class IdServiceTest extends Specification {
         3L == idService.getCurrentIdAndIncrement()
     }
 
-    def "should throw exception when initializing IdService fails"() {
-        given:
-        filesService.createFile("test_db/nextId.txt") >> idPath
-        filesService.createFile(idPath.toString()) >> { throw new IOException() }
-
-        when:
-        new FileDatabaseConfiguration().idService(filesService)
-
-        then:
-        def exception = thrown(RuntimeException)
-        exception.message == "Unable to initialize IdService"
-    }
-
     def "should initialize IdService"() {
         given:
         filesService.createFile("test_db/nextId.txt") >> idPath
