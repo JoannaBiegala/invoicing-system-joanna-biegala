@@ -23,12 +23,12 @@ public class InvoiceController {
     this.invoiceService = invoiceService;
   }
 
-  @GetMapping("/invoices/{id}")
+  @GetMapping(value = "/invoices/{id}", produces = {"application/json;charset=UTF-8"})
   public ResponseEntity<Invoice> getInvoice(@PathVariable long id) {
     return ResponseEntity.of(invoiceService.findForId(id));
   }
 
-  @GetMapping("/invoices")
+  @GetMapping(value = "/invoices", produces = {"application/json;charset=UTF-8"})
   public List<Invoice> getAll() {
     return invoiceService.getAll();
   }
@@ -47,7 +47,7 @@ public class InvoiceController {
     }
   }
 
-  @PutMapping("/invoices/{id}")
+  @PutMapping(value = "/invoices/{id}", produces = {"application/json;charset=UTF-8"})
   public ResponseEntity<?> updateInvoice(@RequestBody Invoice invoice, @PathVariable long id) {
     if (this.invoiceService.updateInvoice(id, invoice)) {
       return ResponseEntity.ok().build();

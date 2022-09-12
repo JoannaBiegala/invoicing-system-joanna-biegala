@@ -15,8 +15,8 @@ import static pl.futurecollars.invoice.TestHelpers.invoice
 
 class FileBasedDatabaseUnitTest extends Specification {
 
-    private final Path databasePath = Paths.get(FileDatabaseConfiguration.DatabaseFile)
-    private final Path idPath = Paths.get(FileDatabaseConfiguration.IdFile)
+    private final databasePath = Path.of("test_db/invoices.json")
+    private final idPath = Path.of("test_db/nextId.txt")
     private final FilesService filesServiceMock = Mock(FilesService)
     private final JsonService jsonServiceMock = Mock(JsonService)
     private final IdService idService = Mock(IdService)
@@ -72,6 +72,17 @@ class FileBasedDatabaseUnitTest extends Specification {
         then:
         def exception = thrown(RuntimeException)
         exception.message == "Failed to load all invoices"
+    }
+
+    def "should throw exception when delete() fails"() {
+        given:
+        database.save(invoice(1L))
+        filesServiceMock.readAllLines(databasePath) >> { throw new IOException() }
+        when:
+        database.delete(1)
+        then:
+        def exception = thrown(RuntimeException)
+        exception.message == "Failed to delete invoice with id: 1"
     }
 
 }

@@ -1,32 +1,30 @@
 package pl.futurecollars.invoice.db.file
 
-
 import pl.futurecollars.invoice.db.AbstractDatabaseTest
 import pl.futurecollars.invoice.utils.FilesService
-import pl.futurecollars.invoice.utils.IdService
 import pl.futurecollars.invoice.utils.JsonService
 
 import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.Paths
 
 import static pl.futurecollars.invoice.TestHelpers.invoice
 
 class FileBasedDatabaseIntegrationTest extends AbstractDatabaseTest {
 
-    private final Path databasePath = Paths.get(FileDatabaseConfiguration.DatabaseFile)
-    private final Path idPath = Paths.get(FileDatabaseConfiguration.IdFile)
+    private final databasePath = Path.of("test_db/invoices.json")
+    private final idPath = Path.of("test_db/nextId.txt")
 
     def setup() {
-        database = new FileRepository(databasePath, new FilesService(), new JsonService(), new IdService(idPath, new FilesService()))
+        def filesService = new FilesService()
+        def idService = new FileDatabaseConfiguration().idService(filesService)
+        database = new FileDatabaseConfiguration().fileRepository(filesService, new JsonService(), idService)
     }
-
     def "should file based database writes invoices to correct file"() {
         when:
         database.save(invoice(4L))
 
         then:
-        1 == Files.readAllLines(databasePath).size()
+        1 == Files.readAllLines(databasePath as Path).size()
 
         when:
         database.save(invoice(5L))
