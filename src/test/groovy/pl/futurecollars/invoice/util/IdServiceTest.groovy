@@ -15,7 +15,7 @@ class IdServiceTest extends Specification {
 
     def "current id if file was empty"() {
         given:
-        IdService idService = new FileDatabaseConfiguration().idService(new FilesService())
+        IdService idService = new FileDatabaseConfiguration().idService(new FileDatabaseConfiguration().filesService())
 
         expect:
         1L == idService.getCurrentIdAndIncrement()
@@ -30,7 +30,7 @@ class IdServiceTest extends Specification {
     def "current id from last number if file was not empty"() {
         given:
         Files.writeString(idPath, "16")
-        IdService idService = new IdService(idPath, new FilesService())
+        IdService idService = new IdService(idPath, new FileDatabaseConfiguration().filesService())
 
         expect:
         17L == idService.getCurrentIdAndIncrement()
@@ -44,7 +44,7 @@ class IdServiceTest extends Specification {
 
     def "current id if it isn't file"() {
         given:
-        IdService idService = new FileDatabaseConfiguration().idService(new FilesService())
+        IdService idService = new FileDatabaseConfiguration().idService(new FileDatabaseConfiguration().filesService())
 
         expect:
         1L == idService.getCurrentIdAndIncrement()

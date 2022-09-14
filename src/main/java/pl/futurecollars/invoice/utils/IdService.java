@@ -3,9 +3,7 @@ package pl.futurecollars.invoice.utils;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import org.springframework.stereotype.Component;
 
-@Component
 public class IdService {
 
   private final FilesService filesService;
@@ -22,9 +20,12 @@ public class IdService {
         String idLine = filesService.readLine(idPath);
         if (!idLine.isEmpty()) {
           currentId = Long.parseLong(idLine);
+        } else {
+          filesService.writeToFile(idPath, String.valueOf(currentId));
         }
       } else {
         filesService.createFile(idPath.toString());
+        filesService.writeToFile(idPath, String.valueOf(currentId));
       }
     } catch (IOException e) {
       throw new RuntimeException("Unable to initialize IdService", e);

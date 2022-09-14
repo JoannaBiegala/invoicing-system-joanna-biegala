@@ -16,7 +16,7 @@ import pl.futurecollars.invoice.service.InvoiceService;
 @RestController
 public class InvoiceController {
 
-  private InvoiceService invoiceService;
+  private final InvoiceService invoiceService;
 
   @Autowired
   public InvoiceController(InvoiceService invoiceService) {
@@ -47,7 +47,7 @@ public class InvoiceController {
     }
   }
 
-  @PutMapping(value = "/invoices/{id}", produces = {"application/json;charset=UTF-8"})
+  @PutMapping("/invoices/{id}")
   public ResponseEntity<?> updateInvoice(@RequestBody Invoice invoice, @PathVariable long id) {
     if (this.invoiceService.updateInvoice(id, invoice)) {
       return ResponseEntity.ok().build();
