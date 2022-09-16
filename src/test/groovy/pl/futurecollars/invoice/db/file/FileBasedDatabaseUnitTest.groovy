@@ -9,14 +9,12 @@ import pl.futurecollars.invoice.utils.JsonService
 import spock.lang.Specification
 
 import java.nio.file.Path
-import java.nio.file.Paths
 
 import static pl.futurecollars.invoice.TestHelpers.invoice
 
 class FileBasedDatabaseUnitTest extends Specification {
 
     private final databasePath = Path.of("test_db/invoices.json")
-    private final idPath = Path.of("test_db/nextId.txt")
     private final FilesService filesServiceMock = Mock(FilesService)
     private final JsonService jsonServiceMock = Mock(JsonService)
     private final IdService idService = Mock(IdService)
@@ -42,7 +40,7 @@ class FileBasedDatabaseUnitTest extends Specification {
         def invoice = invoice(4)
         invoice.setId(1L)
 
-        def json = new JsonService().toJson(invoice)
+        def json = new FileDatabaseConfiguration().jsonService().toJson(invoice)
         filesServiceMock.readAllLines(databasePath) >> { throw new IOException() }
         jsonServiceMock.toObject(json, Invoice.class) >> invoice
         when:

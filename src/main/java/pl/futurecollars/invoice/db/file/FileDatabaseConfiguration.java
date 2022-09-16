@@ -16,9 +16,19 @@ public class FileDatabaseConfiguration {
   private static final String DATABASE_FILE = "test_db/invoices.json";
 
   @Bean
+  public FilesService filesService() {
+    return new FilesService();
+  }
+
+  @Bean
   public IdService idService(FilesService filesService) throws IOException {
     Path idPath = filesService.createFile(ID_FILE);
     return new IdService(idPath, filesService);
+  }
+
+  @Bean
+  public JsonService jsonService() {
+    return new JsonService();
   }
 
   @Bean
