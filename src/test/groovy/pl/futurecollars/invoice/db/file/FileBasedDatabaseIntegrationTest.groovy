@@ -1,6 +1,8 @@
 package pl.futurecollars.invoice.db.file
 
 import pl.futurecollars.invoice.db.AbstractDatabaseTest
+import pl.futurecollars.invoice.utils.FilesService
+import pl.futurecollars.invoice.utils.JsonService
 
 import java.nio.file.Files
 import java.nio.file.Path
@@ -13,9 +15,9 @@ class FileBasedDatabaseIntegrationTest extends AbstractDatabaseTest {
     private final idPath = Path.of("test_db/nextId.txt")
 
     def setup() {
-        def filesService = new FileDatabaseConfiguration().filesService()
+        def filesService = new FilesService()
         def idService = new FileDatabaseConfiguration().idService(filesService)
-        def jsonService = new FileDatabaseConfiguration().jsonService()
+        def jsonService = new JsonService()
         database = new FileDatabaseConfiguration().fileRepository(filesService, jsonService, idService)
     }
 

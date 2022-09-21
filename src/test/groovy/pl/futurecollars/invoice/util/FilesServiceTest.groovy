@@ -1,6 +1,5 @@
 package pl.futurecollars.invoice.util
 
-import pl.futurecollars.invoice.db.file.FileDatabaseConfiguration
 import pl.futurecollars.invoice.utils.FilesService
 import spock.lang.Specification
 
@@ -9,7 +8,7 @@ import java.nio.file.Path
 
 class FilesServiceTest extends Specification {
 
-    private FilesService filesService = new FileDatabaseConfiguration().filesService()
+    private FilesService filesService = new FilesService()
     private Path path = File.createTempFile('lines', '.txt').toPath()
 
     def "should line is correctly appended to file"() {
