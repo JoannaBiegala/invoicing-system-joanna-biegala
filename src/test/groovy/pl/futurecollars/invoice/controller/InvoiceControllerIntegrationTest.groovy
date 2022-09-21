@@ -70,13 +70,9 @@ class InvoiceControllerIntegrationTest extends Specification {
         def invoice = getInvoiceById(verifiedInvoice.getId())
 
         then:
-  //      invoice == verifiedInvoice
         invoice.getId() == verifiedInvoice.getId()
         invoice.getDate() == verifiedInvoice.getDate()
-     //   invoice.getFromCompany() == verifiedInvoice.getFromCompany()
-        //     invoice.getToCompany() == verifiedInvoice.getToCompany()
-        //     invoice.getInvoiceEntries() == verifiedInvoice.getInvoiceEntries()
-    }
+     }
 
     def "should get status 404 when invoice id is not found when getting invoice by id [#id]"() {
         given:
