@@ -40,7 +40,7 @@ class FileBasedDatabaseUnitTest extends Specification {
         def invoice = invoice(4)
         invoice.setId(1L)
 
-        def json = new FileDatabaseConfiguration().jsonService().toJson(invoice)
+        def json = new JsonService().toJson(invoice)
         filesServiceMock.readAllLines(databasePath) >> { throw new IOException() }
         jsonServiceMock.toObject(json, Invoice.class) >> invoice
         when:

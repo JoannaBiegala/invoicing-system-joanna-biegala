@@ -1,13 +1,13 @@
 package pl.futurecollars.invoice.util
 
 import pl.futurecollars.invoice.TestHelpers
-import pl.futurecollars.invoice.db.file.FileDatabaseConfiguration
 import pl.futurecollars.invoice.model.Invoice
+import pl.futurecollars.invoice.utils.JsonService
 import spock.lang.Specification
 
 class JsonServiceTest extends Specification {
 
-    def jsonService = new FileDatabaseConfiguration().jsonService()
+    def jsonService = new JsonService()
     def invoice = TestHelpers.invoice(1)
 
     def "should can convert object to json and read it back"() {
