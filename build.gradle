@@ -1,6 +1,7 @@
 buildscript {
     ext {
         lombokVersion = '1.18.24'
+        jacksonVersion = '2.11.1'
         spockVersion = '2.1-groovy-3.0'
     }
 }
@@ -40,6 +41,10 @@ dependencies {
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    implementation "com.fasterxml.jackson.core:jackson-databind:$jacksonVersion"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:$jacksonVersion"
+    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion"
 
     testImplementation "org.spockframework:spock-core:$spockVersion"
     testImplementation "org.spockframework:spock-spring:$spockVersion"
