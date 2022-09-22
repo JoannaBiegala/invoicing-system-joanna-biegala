@@ -190,11 +190,14 @@ class InvoiceControllerUnitTest extends Specification {
     }
 
     private void resetFile(String filePath) {
+
+
         def path = Path.of(filePath)
         if (Files.exists(path)) {
             Files.deleteIfExists(path)
             Files.createFile(path)
         } else {
+            Files.createDirectories(path.getParent())
             Files.createFile(path)
         }
     }
