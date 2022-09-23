@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="InvoiceApplication-memory" type="Application" factoryName="Application">
+  <configuration default="false" name="InvoiceApplication-dev" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="pl.futurecollars.invoice.InvoiceApplication" />
     <module name="invoicing-system-joanna-biegala.main" />
-    <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=memory" />
+    <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=dev" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="pl.futurecollars.invoice.*" />

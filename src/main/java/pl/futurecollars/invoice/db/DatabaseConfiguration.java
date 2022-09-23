@@ -1,4 +1,4 @@
-package pl.futurecollars.invoice.db.file;
+package pl.futurecollars.invoice.db;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import pl.futurecollars.invoice.db.Database;
+import pl.futurecollars.invoice.db.file.FileRepository;
 import pl.futurecollars.invoice.db.memory.MemoryRepository;
 import pl.futurecollars.invoice.service.InvoiceService;
 import pl.futurecollars.invoice.utils.FilesService;
@@ -14,7 +14,7 @@ import pl.futurecollars.invoice.utils.IdService;
 import pl.futurecollars.invoice.utils.JsonService;
 
 @Configuration
-public class FileDatabaseConfiguration {
+public class DatabaseConfiguration {
 
   @Bean
   public FilesService filesService() {
