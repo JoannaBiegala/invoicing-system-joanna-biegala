@@ -17,7 +17,6 @@ plugins {
 }
 
 repositories {
-    // Use Maven Central for resolving dependencies.
     mavenCentral()
 }
 
@@ -54,13 +53,12 @@ configurations {
 }
 
 test {
-    finalizedBy jacocoTestReport // report is always generated after tests run
+    finalizedBy jacocoTestReport
     finalizedBy jacocoTestCoverageVerification
 }
 
 
 tasks.named('test') {
-    // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
 
@@ -89,5 +87,5 @@ jacocoTestCoverageVerification {
 }
 
 jacocoTestReport {
-    dependsOn test // tests are required to run before generating the report
+    dependsOn test
 }
