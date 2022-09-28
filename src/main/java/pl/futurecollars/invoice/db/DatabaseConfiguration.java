@@ -19,6 +19,18 @@ public class DatabaseConfiguration {
 
   @Bean
   @ConditionalOnProperty(value = "database.type", havingValue = "in-file")
+  public FilesService filesService() {
+    return new FilesService();
+  }
+
+  @Bean
+  @ConditionalOnProperty(value = "database.type", havingValue = "in-file")
+  public JsonService jsonService() {
+    return new JsonService();
+  }
+
+  @Bean
+  @ConditionalOnProperty(value = "database.type", havingValue = "in-file")
   public IdService idService(
       FilesService filesService,
       @Value("${database.idPath}") String idPathString) throws IOException {
