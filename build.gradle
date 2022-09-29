@@ -4,6 +4,8 @@ buildscript {
         spockVersion = '2.2-groovy-3.0'
         springBootVersion = '2.7.3'
         springDependencyManagementVersion = '1.0.13.RELEASE'
+        springFoxStarterVersion = '3.0.0'
+        springFoxUiVersion = '3.0.0'
     }
 }
 
