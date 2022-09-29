@@ -1,5 +1,6 @@
 package pl.futurecollars.invoice.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import pl.futurecollars.invoice.model.Invoice;
 
+@Api(tags = {"invoice-controller"})
 public interface InvoiceApi {
 
   @ApiOperation(value = "Get invoice with given id")

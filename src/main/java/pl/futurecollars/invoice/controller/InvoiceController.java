@@ -1,6 +1,5 @@
 package pl.futurecollars.invoice.controller;
 
-import io.swagger.annotations.Api;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import pl.futurecollars.invoice.model.Invoice;
 import pl.futurecollars.invoice.service.InvoiceService;
 
-@Api(tags = {"invoice-controller"})
 @RestController
 public class InvoiceController implements InvoiceApi {
 
