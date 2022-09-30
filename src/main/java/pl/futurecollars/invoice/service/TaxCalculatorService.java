@@ -3,10 +3,12 @@ package pl.futurecollars.invoice.service;
 import java.math.BigDecimal;
 import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 import pl.futurecollars.invoice.db.Database;
 import pl.futurecollars.invoice.model.Invoice;
 import pl.futurecollars.invoice.model.InvoiceEntry;
 
+@Service
 @AllArgsConstructor
 public class TaxCalculatorService {
 
