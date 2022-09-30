@@ -10,9 +10,9 @@ import java.time.LocalDate
 class TestHelpers {
 
     static company(long id) {
-        new Company(("$id").repeat(10),
-                "ul. Nowa 24d/$id 02-703 Warszawa, Polska",
-                "iCode Trust $id Sp. z o.o")
+        new Company(("iCode Trust $id Sp. z o.o"),
+                "0123456789",
+                "ul. Nowa 24d/$id 02-703 Warszawa, Polska")
     }
 
     static product(long id) {
