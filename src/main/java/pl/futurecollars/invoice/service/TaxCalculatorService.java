@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.futurecollars.invoice.db.Database;
+import pl.futurecollars.invoice.model.Company;
 import pl.futurecollars.invoice.model.Invoice;
 import pl.futurecollars.invoice.model.InvoiceEntry;
 
@@ -16,20 +17,40 @@ public class TaxCalculatorService {
 
   private final Database database;
 
-  public TaxCalculatorResult getTaxCalculatorResult(String taxIdentificationNumber) {
+  public TaxCalculatorResult getTaxCalculatorResult(Company company) {
+
+    String taxIdentificationNumber = company.getTaxIdentificationNumber();
 
     BigDecimal income = calculateIncome(taxIdentificationNumber);
     BigDecimal costs = calculateCosts(taxIdentificationNumber);
+    BigDecimal pensionInsurance = company.getPensionInsurance();
+    BigDecimal totalHealthInsurance = company.getHealthInsurance();
+
     BigDecimal incomingVat = calculateIncomingVat(taxIdentificationNumber);
     BigDecimal outgoingVat = calculateOutgoingVat(taxIdentificationNumber);
 
-    BigDecimal earnings = income.subtract(costs);
+    BigDecimal incomeMinusCosts = income.subtract(costs);
     BigDecimal vatToReturn = incomingVat.subtract(outgoingVat);
+    BigDecimal incomeMinusCostsAndPensionInsurance = incomeMinusCosts.subtract(pensionInsurance);
+    BigDecimal taxCalculationBase = incomeMinusCostsAndPensionInsurance.setScale(0,RoundingMode.UP);
+    BigDecimal incomeTax = taxCalculationBase.multiply(BigDecimal.valueOf(0.19));
+    BigDecimal healthInsurance = totalHealthInsurance.multiply(BigDecimal.valueOf(0.09));
+    BigDecimal healthInsuranceDeductible = totalHealthInsurance.multiply(BigDecimal.valueOf(0.0775));
+    BigDecimal incomeTaxMinusHealthInsurance = incomeTax.subtract(healthInsuranceDeductible);
+    BigDecimal finalIncomeTax = incomeTaxMinusHealthInsurance.setScale(0,RoundingMode.HALF_EVEN);
 
     return TaxCalculatorResult.builder()
         .income(income)
         .costs(costs)
-        .earnings(earnings)
+        .incomeMinusCosts(incomeMinusCosts)
+        .pensionInsurance(pensionInsurance)
+        .incomeMinusCostsAndPensionInsurance(incomeMinusCostsAndPensionInsurance)
+        .taxCalculationBase(taxCalculationBase)
+        .incomeTax(incomeTax)
+        .healthInsurance(healthInsurance)
+        .healthInsuranceDeductible(healthInsuranceDeductible)
+        .incomeTaxMinusHealthInsurance(incomeTaxMinusHealthInsurance)
+        .finalIncomeTax(finalIncomeTax)
         .incomingVat(incomingVat)
         .outgoingVat(outgoingVat)
         .vatToReturn(vatToReturn)
