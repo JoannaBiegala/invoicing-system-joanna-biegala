@@ -32,12 +32,12 @@ public class TaxCalculatorService {
     BigDecimal incomeMinusCosts = income.subtract(costs);
     BigDecimal vatToReturn = incomingVat.subtract(outgoingVat);
     BigDecimal incomeMinusCostsAndPensionInsurance = incomeMinusCosts.subtract(pensionInsurance);
-    BigDecimal taxCalculationBase = incomeMinusCostsAndPensionInsurance.setScale(0,RoundingMode.UP);
+    BigDecimal taxCalculationBase = incomeMinusCostsAndPensionInsurance.setScale(0, RoundingMode.UP);
     BigDecimal incomeTax = taxCalculationBase.multiply(BigDecimal.valueOf(0.19));
     BigDecimal healthInsurance = totalHealthInsurance.multiply(BigDecimal.valueOf(0.09));
     BigDecimal healthInsuranceDeductible = totalHealthInsurance.multiply(BigDecimal.valueOf(0.0775));
     BigDecimal incomeTaxMinusHealthInsurance = incomeTax.subtract(healthInsuranceDeductible);
-    BigDecimal finalIncomeTax = incomeTaxMinusHealthInsurance.setScale(0,RoundingMode.HALF_EVEN);
+    BigDecimal finalIncomeTax = incomeTaxMinusHealthInsurance.setScale(0, RoundingMode.HALF_EVEN);
 
     return TaxCalculatorResult.builder()
         .income(income)
