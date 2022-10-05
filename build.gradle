@@ -102,3 +102,19 @@ jacocoTestCoverageVerification {
 jacocoTestReport {
     dependsOn test
 }
+
+task testWithFileDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'file'
+}
+
+task testWithMemoryDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'memory'
+}
+
+task testWithSQLDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'sql'
+}
+
+check.dependsOn testWithFileDatabase
+check.dependsOn testWithFileDatabase
+//check.dependsOn testWithSqlDatabase
