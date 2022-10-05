@@ -1,7 +1,8 @@
 buildscript {
     ext {
+        flywayVersion = '9.3.0'
         lombokVersion = '1.18.24'
-        spockVersion = '2.2-groovy-3.0'
+        spockVersion = '2.3-groovy-3.0'
         springBootVersion = '2.7.3'
         springDependencyManagementVersion = '1.0.13.RELEASE'
         springFoxStarterVersion = '3.0.0'
@@ -26,10 +27,15 @@ dependencies {
     annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
+    compileOnly "org.flywaydb:flyway-core:${flywayVersion}"
+    compileOnly 'com.h2database:h2'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation "org.springframework.boot:spring-boot-starter-jdbc"
     implementation "io.springfox:springfox-boot-starter:${springFoxStarterVersion}"
     implementation "io.springfox:springfox-swagger-ui:${springFoxUiVersion}"
+
+    runtimeOnly 'org.postgresql:postgresql:42.5.0'
 
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
@@ -38,6 +44,8 @@ dependencies {
     testImplementation "org.spockframework:spock-spring:$spockVersion"
     testImplementation "org.spockframework:spock-core:$spockVersion"
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'com.h2database:h2:2.1.214'
+
 }
 
 java {
