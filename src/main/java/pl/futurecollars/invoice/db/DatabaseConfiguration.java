@@ -7,8 +7,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import pl.futurecollars.invoice.db.file.FileRepository;
 import pl.futurecollars.invoice.db.memory.MemoryRepository;
+import pl.futurecollars.invoice.db.sql.SqlDatabase;
 import pl.futurecollars.invoice.utils.FilesService;
 import pl.futurecollars.invoice.utils.IdService;
 import pl.futurecollars.invoice.utils.JsonService;
@@ -16,6 +18,13 @@ import pl.futurecollars.invoice.utils.JsonService;
 @Slf4j
 @Configuration
 public class DatabaseConfiguration {
+
+  @Bean
+  @ConditionalOnProperty(value = "database.type", havingValue = "sql")
+  public Database sqlDatabase(JdbcTemplate jdbcTemplate) {
+    log.info("Running on sql database");
+    return new SqlDatabase(jdbcTemplate);
+  }
 
   @Bean
   @ConditionalOnProperty(value = "database.type", havingValue = "in-file")
