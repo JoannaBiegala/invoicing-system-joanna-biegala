@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
@@ -71,7 +72,7 @@ public class SqlDatabase implements Database {
         return ps;
       }, keyHolder);
 
-      long invoiceEntryId = keyHolder.getKey().longValue();
+      long invoiceEntryId = Objects.requireNonNull(keyHolder.getKey()).longValue();
 
       jdbcTemplate.update(connection -> {
         PreparedStatement ps = connection.prepareStatement(
@@ -84,19 +85,19 @@ public class SqlDatabase implements Database {
     return invoiceId;
   }
 
-  private long insertInvoice(Invoice invoice, long buyerId, long sellerId) {
+  private int insertInvoice(Invoice invoice, long buyerId, long sellerId) {
     GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
       PreparedStatement ps =
-          connection.prepareStatement("insert into invoices (date, buyer, seller) values (?, ?, ?);", new String[] {"id"});
+          connection.prepareStatement("insert into invoices (date, number, buyer, seller) values (?, ?, ?, ?);", new String[] {"id"});
       ps.setDate(1, Date.valueOf(invoice.getDate()));
-      ps.setLong(2, buyerId);
-      ps.setLong(3, sellerId);
+      ps.setString(2, invoice.getNumber());
+      ps.setLong(3, buyerId);
+      ps.setLong(4, sellerId);
       return ps;
     }, keyHolder);
 
-    long invoiceId = keyHolder.getKey().longValue();
-    return invoiceId;
+    return Objects.requireNonNull(keyHolder.getKey()).intValue();
   }
 
   private long insertCompany(Company buyer) {
@@ -104,7 +105,7 @@ public class SqlDatabase implements Database {
 
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
-          "insert into companies (\"name\", address, tax_identification_number, health_insurance, pension_insurance) values (?, ?, ?, ?, ?);",
+          "insert into companies (name, address, tax_identification_number, health_insurance, pension_insurance) values (?, ?, ?, ?, ?);",
           new String[] {"id"});
       ps.setString(1, buyer.getName());
       ps.setString(2, buyer.getAddress());
@@ -114,7 +115,7 @@ public class SqlDatabase implements Database {
       return ps;
     }, keyHolder);
 
-    return keyHolder.getKey().longValue();
+    return Objects.requireNonNull(keyHolder.getKey()).longValue();
   }
 
   private Integer insertCarAndGetItId(Car car) {
@@ -132,7 +133,7 @@ public class SqlDatabase implements Database {
       return ps;
     }, keyHolder);
 
-    return keyHolder.getKey().intValue();
+    return Objects.requireNonNull(keyHolder.getKey()).intValue();
   }
 
   @Override
@@ -147,8 +148,54 @@ public class SqlDatabase implements Database {
   }
 
   @Override
+  @Transactional
   public void delete(long id) {
 
+    Optional<Invoice> invoiceOptional = findById(id);
+
+    if (invoiceOptional.isPresent()) {
+      Invoice invoice = invoiceOptional.get();
+
+      deleteCarsRelatedToInvoice(id);
+      deleteEntriesRelatedToInvoice(id);
+      deleteCompaniesRelatedToInvoice(invoice);
+
+      jdbcTemplate.update(connection -> {
+        PreparedStatement ps = connection.prepareStatement(
+            "delete from invoices where id = ?;");
+        ps.setLong(1, id);
+        return ps;
+      });
+    }
+  }
+
+  private void deleteCarsRelatedToInvoice(long id) {
+    jdbcTemplate.update(connection -> { // warn: makes use of delete cascade
+      PreparedStatement ps = connection.prepareStatement("delete from cars where id in ("
+          + "select expense_related_to_car from invoice_entries where id in ("
+          + "select invoice_entry_id from invoice_invoice_entry where invoice_id=?));");
+      ps.setLong(1, id);
+      return ps;
+    });
+  }
+
+  private void deleteEntriesRelatedToInvoice(long id) {
+    jdbcTemplate.update(connection -> {
+      PreparedStatement ps = connection.prepareStatement(
+          "delete from invoice_entries where id in (select invoice_entry_id from invoice_invoice_entry where invoice_id=?);");
+      ps.setLong(1, id);
+      return ps;
+    });
+  }
+
+  private void deleteCompaniesRelatedToInvoice(Invoice invoice) {
+    jdbcTemplate.update(connection -> {
+      PreparedStatement ps = connection.prepareStatement(
+          "delete from companies where id in (?, ?);");
+      ps.setLong(1, invoice.getBuyer().getId());
+      ps.setLong(2, invoice.getSeller().getId());
+      return ps;
+    });
   }
 
   @Override

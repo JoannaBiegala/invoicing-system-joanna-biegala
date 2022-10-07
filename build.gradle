@@ -113,8 +113,9 @@ task testWithMemoryDatabase(type: Test) {
     useJUnitPlatform()
 }
 
-task testWithSQLDatabase(type: Test) {
+task testWithSqlDatabase(type: Test) {
     systemProperty 'spring.profiles.active', 'sql'
+    useJUnitPlatform()
 }
 
 check.dependsOn testWithFileDatabase
