@@ -153,11 +153,11 @@ public class SqlDatabase implements Database {
     Optional<Invoice> invoiceOptional = findById(id);
 
     if (invoiceOptional.isPresent()) {
-      Invoice invoice = invoiceOptional.get();
-
       deleteCarsRelatedToInvoice(id);
       deleteEntriesRelatedToInvoice(id);
       deleteInvoice(id);
+
+      Invoice invoice = invoiceOptional.get();
       deleteCompaniesRelatedToInvoice(invoice);
     }
   }
