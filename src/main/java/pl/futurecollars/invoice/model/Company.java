@@ -3,9 +3,11 @@ package pl.futurecollars.invoice.model;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Builder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,9 +23,9 @@ public class Company {
   private String address;
 
   @ApiModelProperty(value = "Health insurance cost", required = true, example = "500")
-  private BigDecimal healthInsurance = BigDecimal.ZERO;
+  private BigDecimal healthInsurance;
 
   @ApiModelProperty(value = "Pension insurance cost", required = true, example = "1400")
-  private BigDecimal pensionInsurance = BigDecimal.ZERO;
+  private BigDecimal pensionInsurance;
 
 }

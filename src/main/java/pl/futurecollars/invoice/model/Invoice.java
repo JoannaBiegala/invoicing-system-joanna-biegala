@@ -3,11 +3,15 @@ package pl.futurecollars.invoice.model;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDate;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@Builder
 @Data
+@AllArgsConstructor
 @NoArgsConstructor
 public class Invoice {
 
@@ -27,10 +31,4 @@ public class Invoice {
   @ApiModelProperty(value = "List of products/services", required = true)
   private List<InvoiceEntry> invoiceEntries;
 
-  public Invoice(LocalDate date, Company seller, Company buyer, List<InvoiceEntry> invoiceEntries) {
-    this.date = date;
-    this.seller = seller;
-    this.buyer = buyer;
-    this.invoiceEntries = invoiceEntries;
-  }
 }
