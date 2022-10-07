@@ -150,7 +150,6 @@ public class SqlDatabase implements Database {
   @Override
   @Transactional
   public void delete(long id) {
-
     Optional<Invoice> invoiceOptional = findById(id);
 
     if (invoiceOptional.isPresent()) {
@@ -158,14 +157,8 @@ public class SqlDatabase implements Database {
 
       deleteCarsRelatedToInvoice(id);
       deleteEntriesRelatedToInvoice(id);
+      deleteInvoice(id);
       deleteCompaniesRelatedToInvoice(invoice);
-
-      jdbcTemplate.update(connection -> {
-        PreparedStatement ps = connection.prepareStatement(
-            "delete from invoices where id = ?;");
-        ps.setLong(1, id);
-        return ps;
-      });
     }
   }
 
@@ -183,6 +176,15 @@ public class SqlDatabase implements Database {
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
           "delete from invoice_entries where id in (select invoice_entry_id from invoice_invoice_entry where invoice_id=?);");
+      ps.setLong(1, id);
+      return ps;
+    });
+  }
+
+  private void deleteInvoice(long id) {
+    jdbcTemplate.update(connection -> {
+      PreparedStatement ps = connection.prepareStatement(
+          "delete from invoices where id = ?;");
       ps.setLong(1, id);
       return ps;
     });
@@ -230,7 +232,7 @@ public class SqlDatabase implements Database {
           .id(rs.getInt("id"))
           .date(rs.getDate("date").toLocalDate())
           .buyer(Company.builder()
-              //  .id(rs.getBigDecimal("buyer_id"))
+              .id(rs.getInt("buyer_id"))
               .taxIdentificationNumber(rs.getString("buyer_tax_id"))
               .name(rs.getString("buyer_name"))
               .address(rs.getString("buyer_address"))
@@ -239,7 +241,7 @@ public class SqlDatabase implements Database {
               .build()
           )
           .seller(Company.builder()
-              //             .id(rs.getInt("seller_id"))
+              .id(rs.getInt("seller_id"))
               .taxIdentificationNumber(rs.getString("seller_tax_id"))
               .name(rs.getString("seller_name"))
               .address(rs.getString("seller_address"))
