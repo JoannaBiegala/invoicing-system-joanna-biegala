@@ -15,16 +15,16 @@ class TestHelpers {
             .name(("iCode Trust $id Sp. z o.o"))
             .taxIdentificationNumber(("$id").repeat(10))
             .address("ul. Nowa 24d/$id 02-703 Warszawa, Polska")
-            .healthInsurance(BigDecimal.valueOf(500))
-            .pensionInsurance(BigDecimal.valueOf(1400))
+            .healthInsurance(BigDecimal.valueOf(500).setScale(2))
+            .pensionInsurance(BigDecimal.valueOf(1400).setScale(2))
             .build()
     }
 
     static product(long id) {
         new InvoiceEntry("Programming course $id",
-                BigDecimal.ONE,
-                BigDecimal.valueOf(id * 1000),
-                BigDecimal.valueOf(id * 1000 * 0.08),
+                BigDecimal.valueOf(1).setScale(2),
+                BigDecimal.valueOf(id * 1000).setScale(2),
+                BigDecimal.valueOf(id * 1000 * 0.08).setScale(2),
                 Vat.Vat_8, null)
     }
 
@@ -42,29 +42,29 @@ class TestHelpers {
             .name("First")
             .taxIdentificationNumber("1111111111")
             .address("ul. Pierwsza 1, Warszawa, Polska")
-            .healthInsurance(BigDecimal.valueOf(500))
-            .pensionInsurance(BigDecimal.valueOf(1400))
+            .healthInsurance(BigDecimal.valueOf(500).setScale(2))
+            .pensionInsurance(BigDecimal.valueOf(1400).setScale(2))
             .build()
 
     static Company secondCompany = Company.builder()
             .name("Second")
             .taxIdentificationNumber("2222222222")
             .address("ul. Druga 2, Warszawa, Polska")
-            .healthInsurance(BigDecimal.valueOf(500))
-            .pensionInsurance(BigDecimal.valueOf(1400))
+            .healthInsurance(BigDecimal.valueOf(500).setScale(2))
+            .pensionInsurance(BigDecimal.valueOf(1400).setScale(2))
             .build()
 
     static Car firstCar = new Car("AAA 12 34", true)
 
     static Car secondCar = new Car("BBB 12 34", false)
 
-    static InvoiceEntry firstEntry = new InvoiceEntry("First product", BigDecimal.ONE, BigDecimal.valueOf(10000), BigDecimal.valueOf(10000 * 0.23), Vat.Vat_23, null)
+    static InvoiceEntry firstEntry = new InvoiceEntry("First product", BigDecimal.valueOf(1).setScale(2), BigDecimal.valueOf(10000).setScale(2), BigDecimal.valueOf(10000 * 0.23).setScale(2), Vat.Vat_23, null)
 
-    static InvoiceEntry secondEntry = new InvoiceEntry("Second product", BigDecimal.TEN, BigDecimal.valueOf(5000), BigDecimal.valueOf(5000 * 0.05), Vat.Vat_5, null)
+    static InvoiceEntry secondEntry = new InvoiceEntry("Second product", BigDecimal.valueOf(10).setScale(2), BigDecimal.valueOf(5000).setScale(2), BigDecimal.valueOf(5000 * 0.05).setScale(2), Vat.Vat_5, null)
 
-    static InvoiceEntry thirdEntry = new InvoiceEntry("Third product", BigDecimal.ONE, BigDecimal.valueOf(10000), BigDecimal.valueOf(10000 * 0.23), Vat.Vat_23, firstCar)
+    static InvoiceEntry thirdEntry = new InvoiceEntry("Third product", BigDecimal.valueOf(1).setScale(2), BigDecimal.valueOf(10000).setScale(2), BigDecimal.valueOf(10000 * 0.23).setScale(2), Vat.Vat_23, firstCar)
 
-    static InvoiceEntry fifthEntry = new InvoiceEntry("Third product", BigDecimal.ONE, BigDecimal.valueOf(10000), BigDecimal.valueOf(10000 * 0.23), Vat.Vat_23, secondCar)
+    static InvoiceEntry fifthEntry = new InvoiceEntry("Third product", BigDecimal.valueOf(1).setScale(2), BigDecimal.valueOf(10000).setScale(2), BigDecimal.valueOf(10000 * 0.23).setScale(2), Vat.Vat_23, secondCar)
 
     static Invoice firstInvoice = Invoice.builder()
             .date(LocalDate.of(2022, 10, 1))

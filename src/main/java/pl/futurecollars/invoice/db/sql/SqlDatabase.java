@@ -23,7 +23,7 @@ import pl.futurecollars.invoice.model.Vat;
 @AllArgsConstructor
 public class SqlDatabase implements Database {
 
-  public static final String SELECT_QUERY = "select i.id, i.date, "
+  public static final String SELECT_QUERY = "select i.id, i.date, i.number, "
       + "c1.id as seller_id, c1.name as seller_name, c1.tax_identification_number as seller_tax_id, c1.address as seller_address, "
       + "c1.pension_insurance as seller_pension_insurance, c1.health_insurance as seller_health_insurance, "
       + "c2.id as buyer_id, c2.name as buyer_name, c2.tax_identification_number as buyer_tax_id, c2.address as buyer_address, "
@@ -96,7 +96,6 @@ public class SqlDatabase implements Database {
       ps.setLong(4, sellerId);
       return ps;
     }, keyHolder);
-
     return Objects.requireNonNull(keyHolder.getKey()).intValue();
   }
 
@@ -114,7 +113,6 @@ public class SqlDatabase implements Database {
       ps.setBigDecimal(5, buyer.getPensionInsurance());
       return ps;
     }, keyHolder);
-
     return Objects.requireNonNull(keyHolder.getKey()).longValue();
   }
 
@@ -132,7 +130,6 @@ public class SqlDatabase implements Database {
       ps.setBoolean(2, car.isPersonalUse());
       return ps;
     }, keyHolder);
-
     return Objects.requireNonNull(keyHolder.getKey()).intValue();
   }
 
@@ -143,20 +140,92 @@ public class SqlDatabase implements Database {
   }
 
   @Override
+  @Transactional
   public void update(long id, Invoice updatedInvoice) {
+    Optional<Invoice> originalInvoice = findById(id);
+    if (originalInvoice.isPresent()) {
+      updateInvoiceData(updatedInvoice, id);
+      updateCompany(updatedInvoice.getBuyer(), originalInvoice.get().getBuyer());
+      updateCompany(updatedInvoice.getSeller(), originalInvoice.get().getSeller());
+      deleteCarsRelatedToInvoice(id);
+      deleteEntriesRelatedToInvoice(id);
+      addEntriesRelatedToInvoice(id, updatedInvoice);
+    }
+  }
 
+  private void updateInvoiceData(Invoice updatedInvoice, long originalInvoiceId) {
+    jdbcTemplate.update(connection -> {
+      PreparedStatement ps = connection.prepareStatement(
+          "update invoices "
+              + "set date=?, "
+              + "number=? "
+              + "where id=?"
+      );
+      ps.setDate(1, Date.valueOf(updatedInvoice.getDate()));
+      ps.setString(2, updatedInvoice.getNumber());
+      ps.setLong(3, originalInvoiceId);
+      return ps;
+    });
+  }
+
+  private void updateCompany(Company updatedCompany, Company originalCompany) {
+    jdbcTemplate.update(connection -> {
+      PreparedStatement ps = connection.prepareStatement(
+          "update companies "
+              + "set tax_identification_number=?, "
+              + "address=?, "
+              + "name=?, "
+              + "health_insurance=?, "
+              + "pension_insurance=? "
+              + "where id=?"
+      );
+      ps.setString(1, updatedCompany.getTaxIdentificationNumber());
+      ps.setString(2, updatedCompany.getAddress());
+      ps.setString(3, updatedCompany.getName());
+      ps.setBigDecimal(4, updatedCompany.getHealthInsurance());
+      ps.setBigDecimal(5, updatedCompany.getPensionInsurance());
+      ps.setLong(6, originalCompany.getId());
+      return ps;
+    });
+  }
+
+  private void addEntriesRelatedToInvoice(long invoiceId, Invoice invoice) {
+    GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+    invoice.getInvoiceEntries().forEach(invoiceEntry -> {
+      jdbcTemplate.update(connection -> {
+        PreparedStatement ps = connection.prepareStatement(
+            "insert into invoice_entries (description, quantity, net_price, vat_value, vat_rate, expense_related_to_car) "
+                + "values (?,?,?,?,?,?);",
+            new String[] {"id"});
+        ps.setString(1, invoiceEntry.getDescription());
+        ps.setBigDecimal(2, invoiceEntry.getQuantity());
+        ps.setBigDecimal(3, invoiceEntry.getNetPrice());
+        ps.setBigDecimal(4, invoiceEntry.getVatValue());
+        ps.setInt(5, vatToId.get(invoiceEntry.getVatRate()));
+        ps.setObject(6, insertCarAndGetItId(invoiceEntry.getExpenseRelatedToCar()));
+        return ps;
+      }, keyHolder);
+
+      long invoiceEntryId = Objects.requireNonNull(keyHolder.getKey()).longValue();
+
+      jdbcTemplate.update(connection -> {
+        PreparedStatement ps = connection.prepareStatement(
+            "insert into invoice_invoice_entry (invoice_id, invoice_entry_id) values (?, ?);");
+        ps.setLong(1, invoiceId);
+        ps.setLong(2, invoiceEntryId);
+        return ps;
+      });
+    });
   }
 
   @Override
   @Transactional
   public void delete(long id) {
     Optional<Invoice> invoiceOptional = findById(id);
-
     if (invoiceOptional.isPresent()) {
       deleteCarsRelatedToInvoice(id);
       deleteEntriesRelatedToInvoice(id);
       deleteInvoice(id);
-
       Invoice invoice = invoiceOptional.get();
       deleteCompaniesRelatedToInvoice(invoice);
     }
@@ -231,6 +300,7 @@ public class SqlDatabase implements Database {
       return Invoice.builder()
           .id(rs.getInt("id"))
           .date(rs.getDate("date").toLocalDate())
+          .number(rs.getString("number"))
           .buyer(Company.builder()
               .id(rs.getInt("buyer_id"))
               .taxIdentificationNumber(rs.getString("buyer_tax_id"))
