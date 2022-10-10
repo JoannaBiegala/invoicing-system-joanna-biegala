@@ -20,6 +20,18 @@ import pl.futurecollars.invoice.utils.JsonService;
 public class DatabaseConfiguration {
 
   @Bean
+  @ConditionalOnProperty(value = "database.type", havingValue = "in-file")
+  public FilesService filesService() {
+    return new FilesService();
+  }
+
+  @Bean
+  @ConditionalOnProperty(value = "database.type", havingValue = "in-file")
+  public JsonService jsonService() {
+    return new JsonService();
+  }
+
+  @Bean
   @ConditionalOnProperty(value = "database.type", havingValue = "sql")
   public Database sqlDatabase(JdbcTemplate jdbcTemplate) {
     log.info("Running on sql database");

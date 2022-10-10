@@ -226,8 +226,7 @@ public class SqlDatabase implements Database {
       deleteCarsRelatedToInvoice(id);
       deleteEntriesRelatedToInvoice(id);
       deleteInvoice(id);
-      Invoice invoice = invoiceOptional.get();
-      deleteCompaniesRelatedToInvoice(invoice);
+      deleteCompaniesRelatedToInvoice(invoiceOptional.get());
     }
   }
 
