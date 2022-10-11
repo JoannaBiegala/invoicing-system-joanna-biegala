@@ -150,7 +150,9 @@ public class SqlDatabase implements Database {
       deleteCarsRelatedToInvoice(id);
       deleteEntriesRelatedToInvoice(id);
       addEntriesRelatedToInvoice(id, updatedInvoice);
-    } else throw new RuntimeException("Failed to update invoice with id: " + id);
+    } else {
+      throw new RuntimeException("Failed to update invoice with id: " + id);
+    }
   }
 
   private void updateInvoiceData(Invoice updatedInvoice, long originalInvoiceId) {
