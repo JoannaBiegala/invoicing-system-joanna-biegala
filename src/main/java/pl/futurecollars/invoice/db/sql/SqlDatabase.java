@@ -141,7 +141,7 @@ public class SqlDatabase implements Database {
 
   @Override
   @Transactional
-  public void update(long id, Invoice updatedInvoice) {
+  public Optional<Invoice> update(long id, Invoice updatedInvoice) {
     Optional<Invoice> originalInvoice = findById(id);
     if (originalInvoice.isPresent()) {
       updateInvoiceData(updatedInvoice, id);
@@ -151,6 +151,7 @@ public class SqlDatabase implements Database {
       deleteEntriesRelatedToInvoice(id);
       addEntriesRelatedToInvoice(id, updatedInvoice);
     }
+    return originalInvoice;
   }
 
   private void updateInvoiceData(Invoice updatedInvoice, long originalInvoiceId) {
@@ -220,7 +221,7 @@ public class SqlDatabase implements Database {
 
   @Override
   @Transactional
-  public void delete(long id) {
+  public Optional<Invoice> delete(long id) {
     Optional<Invoice> invoiceOptional = findById(id);
     if (invoiceOptional.isPresent()) {
       deleteCarsRelatedToInvoice(id);
@@ -229,6 +230,7 @@ public class SqlDatabase implements Database {
       Invoice invoice = invoiceOptional.get();
       deleteCompaniesRelatedToInvoice(invoice);
     }
+    return invoiceOptional;
   }
 
   private void deleteCarsRelatedToInvoice(long id) {
