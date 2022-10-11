@@ -71,6 +71,7 @@ public class FileRepository implements Database {
 
   @Override
   public Optional<Invoice> delete(long id) {
+    Optional<Invoice> invoiceOptional = findById(id);
     try {
       var invoicesExceptDeleted = filesService.readAllLines(databasePath)
           .stream()
@@ -81,7 +82,7 @@ public class FileRepository implements Database {
     } catch (IOException ex) {
       throw new RuntimeException("Failed to delete invoice with id: " + id, ex);
     }
-    return Optional.empty();
+    return invoiceOptional;
   }
 
   private boolean containsId(String line, long id) {

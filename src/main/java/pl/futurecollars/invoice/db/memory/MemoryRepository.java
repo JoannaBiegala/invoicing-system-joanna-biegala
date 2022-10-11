@@ -39,8 +39,9 @@ public class MemoryRepository implements Database {
 
   @Override
   public Optional<Invoice> delete(long id) {
+    Optional<Invoice> invoiceOptional = findById(id);
     invoices.remove(id);
-    return Optional.empty();
+    return invoiceOptional;
   }
 
   @Override
