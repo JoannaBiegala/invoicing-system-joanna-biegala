@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.PostConstruct;
-import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -20,10 +19,9 @@ import pl.futurecollars.invoice.model.Invoice;
 import pl.futurecollars.invoice.model.InvoiceEntry;
 import pl.futurecollars.invoice.model.Vat;
 
-@AllArgsConstructor
 public class SqlDatabase implements Database {
 
-  public static final String SELECT_QUERY = "select i.id, i.date, i.number, "
+  private static final String SELECT_INVOICES_QUERY = "select i.id, i.date, i.number, "
       + "c1.id as seller_id, c1.name as seller_name, c1.tax_identification_number as seller_tax_id, c1.address as seller_address, "
       + "c1.pension_insurance as seller_pension_insurance, c1.health_insurance as seller_health_insurance, "
       + "c2.id as buyer_id, c2.name as buyer_name, c2.tax_identification_number as buyer_tax_id, c2.address as buyer_address, "
@@ -35,6 +33,11 @@ public class SqlDatabase implements Database {
   private JdbcTemplate jdbcTemplate;
   private final Map<Vat, Integer> vatToId = new HashMap<>();
   private final Map<Integer, Vat> idToVat = new HashMap<>();
+  private GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+
+  public SqlDatabase(JdbcTemplate jdbcTemplate) {
+    this.jdbcTemplate = jdbcTemplate;
+  }
 
   @PostConstruct
   void initVatRatesMap() {
@@ -50,43 +53,46 @@ public class SqlDatabase implements Database {
   @Override
   @Transactional
   public long save(Invoice invoice) {
-    GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
     long buyerId = insertCompany(invoice.getBuyer());
     long sellerId = insertCompany(invoice.getSeller());
     long invoiceId = insertInvoice(invoice, buyerId, sellerId);
-
-    invoice.getInvoiceEntries().forEach(entry -> {
-      jdbcTemplate.update(connection -> {
-        PreparedStatement ps = connection
-            .prepareStatement(
-                "insert into invoice_entries (description, quantity, net_price, vat_value, vat_rate, expense_related_to_car) "
-                    + "values (?, ?, ?, ?, ?, ?);",
-                new String[] {"id"});
-        ps.setString(1, entry.getDescription());
-        ps.setBigDecimal(2, entry.getQuantity());
-        ps.setBigDecimal(3, entry.getNetPrice());
-        ps.setBigDecimal(4, entry.getVatValue());
-        ps.setInt(5, vatToId.get(entry.getVatRate()));
-        ps.setObject(6, insertCarAndGetItId(entry.getExpenseRelatedToCar()));
-        return ps;
-      }, keyHolder);
-
-      long invoiceEntryId = Objects.requireNonNull(keyHolder.getKey()).longValue();
-
-      jdbcTemplate.update(connection -> {
-        PreparedStatement ps = connection.prepareStatement(
-            "insert into invoice_invoice_entry (invoice_id, invoice_entry_id) values (?, ?);");
-        ps.setLong(1, invoiceId);
-        ps.setLong(2, invoiceEntryId);
-        return ps;
-      });
-    });
+    for (InvoiceEntry entry : invoice.getInvoiceEntries()) {
+      long invoiceEntryId = insertInvoice_entries(entry);
+      insertInvoice_invoice_entry(invoiceId, invoiceEntryId);
+    }
     return invoiceId;
   }
 
+  long insertInvoice_entries(InvoiceEntry entry) {
+    jdbcTemplate.update(connection -> {
+      PreparedStatement ps = connection
+          .prepareStatement(
+              "insert into invoice_entries (description, quantity, net_price, vat_value, vat_rate, expense_related_to_car) "
+                  + "values (?, ?, ?, ?, ?, ?);",
+              new String[] {"id"});
+      ps.setString(1, entry.getDescription());
+      ps.setBigDecimal(2, entry.getQuantity());
+      ps.setBigDecimal(3, entry.getNetPrice());
+      ps.setBigDecimal(4, entry.getVatValue());
+      ps.setInt(5, vatToId.get(entry.getVatRate()));
+      ps.setObject(6, insertCarAndGetItId(entry.getExpenseRelatedToCar()));
+      return ps;
+    }, keyHolder);
+    return Objects.requireNonNull(keyHolder.getKey()).longValue();
+  }
+
+  void insertInvoice_invoice_entry(long invoiceId, long invoiceEntryId) {
+    jdbcTemplate.update(connection -> {
+      PreparedStatement ps = connection.prepareStatement(
+          "insert into invoice_invoice_entry (invoice_id, invoice_entry_id) values (?, ?);");
+      ps.setLong(1, invoiceId);
+      ps.setLong(2, invoiceEntryId);
+      return ps;
+    });
+  }
+
   private int insertInvoice(Invoice invoice, long buyerId, long sellerId) {
-    GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
       PreparedStatement ps =
           connection.prepareStatement("insert into invoices (date, number, buyer, seller) values (?, ?, ?, ?);", new String[] {"id"});
@@ -100,8 +106,6 @@ public class SqlDatabase implements Database {
   }
 
   private long insertCompany(Company buyer) {
-    GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
           "insert into companies (name, address, tax_identification_number, health_insurance, pension_insurance) values (?, ?, ?, ?, ?);",
@@ -120,7 +124,6 @@ public class SqlDatabase implements Database {
     if (car == null) {
       return null;
     }
-    GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection
           .prepareStatement(
@@ -135,7 +138,7 @@ public class SqlDatabase implements Database {
 
   @Override
   public Optional<Invoice> findById(long id) {
-    List<Invoice> invoices = jdbcTemplate.query(SELECT_QUERY + " where i.id = " + id, invoiceRowMapper());
+    List<Invoice> invoices = jdbcTemplate.query(SELECT_INVOICES_QUERY + " where i.id = " + id, invoiceRowMapper());
     return invoices.isEmpty() ? Optional.empty() : Optional.of(invoices.get(0));
   }
 
@@ -192,32 +195,10 @@ public class SqlDatabase implements Database {
   }
 
   private void addEntriesRelatedToInvoice(long invoiceId, Invoice invoice) {
-    GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-    invoice.getInvoiceEntries().forEach(invoiceEntry -> {
-      jdbcTemplate.update(connection -> {
-        PreparedStatement ps = connection.prepareStatement(
-            "insert into invoice_entries (description, quantity, net_price, vat_value, vat_rate, expense_related_to_car) "
-                + "values (?,?,?,?,?,?);",
-            new String[] {"id"});
-        ps.setString(1, invoiceEntry.getDescription());
-        ps.setBigDecimal(2, invoiceEntry.getQuantity());
-        ps.setBigDecimal(3, invoiceEntry.getNetPrice());
-        ps.setBigDecimal(4, invoiceEntry.getVatValue());
-        ps.setInt(5, vatToId.get(invoiceEntry.getVatRate()));
-        ps.setObject(6, insertCarAndGetItId(invoiceEntry.getExpenseRelatedToCar()));
-        return ps;
-      }, keyHolder);
-
-      long invoiceEntryId = Objects.requireNonNull(keyHolder.getKey()).longValue();
-
-      jdbcTemplate.update(connection -> {
-        PreparedStatement ps = connection.prepareStatement(
-            "insert into invoice_invoice_entry (invoice_id, invoice_entry_id) values (?, ?);");
-        ps.setLong(1, invoiceId);
-        ps.setLong(2, invoiceEntryId);
-        return ps;
-      });
-    });
+    for (InvoiceEntry entry : invoice.getInvoiceEntries()) {
+      long invoiceEntryId = insertInvoice_entries(entry);
+      insertInvoice_invoice_entry(invoiceId, invoiceEntryId);
+    }
   }
 
   @Override
@@ -272,7 +253,7 @@ public class SqlDatabase implements Database {
 
   @Override
   public List<Invoice> getAll() {
-    return jdbcTemplate.query(SELECT_QUERY, invoiceRowMapper());
+    return jdbcTemplate.query(SELECT_INVOICES_QUERY, invoiceRowMapper());
   }
 
   private RowMapper<Invoice> invoiceRowMapper() {
