@@ -9,7 +9,7 @@ import pl.futurecollars.invoice.model.Invoice;
 
 public class JpaDatabase implements Database {
 
-  private InvoiceRepository invoiceRepository;
+  private final InvoiceRepository invoiceRepository;
 
   public JpaDatabase(InvoiceRepository invoiceRepository) {
     this.invoiceRepository = invoiceRepository;
@@ -27,15 +27,17 @@ public class JpaDatabase implements Database {
 
   @Override
   public Optional<Invoice> update(long id, Invoice updatedInvoice) {
-    Optional<Invoice> invoiceOptional = invoiceRepository.findById(id);
+    Optional<Invoice> invoiceOptional = findById(id);
     if (invoiceOptional.isPresent()) {
       Invoice invoice = invoiceOptional.get();
-      updatedInvoice.setId(invoice.getId());
-      updatedInvoice.setBuyer(invoice.getBuyer());
-      updatedInvoice.setSeller(invoice.getSeller());
+      updatedInvoice.setId(id);
+      updatedInvoice.getBuyer().setId(invoice.getBuyer().getId());
+      updatedInvoice.getSeller().setId(invoice.getSeller().getId());
+
+      return Optional.of(invoiceRepository.save(updatedInvoice));
+    } else {
+      return Optional.empty();
     }
-    invoiceRepository.save(updatedInvoice);
-    return invoiceOptional;
   }
 
   @Override

@@ -121,8 +121,10 @@ task testWithSqlDatabase(type: Test) {
 
 task testWithJpaDatabase(type: Test) {
     systemProperty 'spring.profiles.active', 'jpa'
+    useJUnitPlatform()
 }
 
 check.dependsOn testWithFileDatabase
 check.dependsOn testWithMemoryDatabase
 check.dependsOn testWithSqlDatabase
+//check.dependsOn testWithJpaDatabase

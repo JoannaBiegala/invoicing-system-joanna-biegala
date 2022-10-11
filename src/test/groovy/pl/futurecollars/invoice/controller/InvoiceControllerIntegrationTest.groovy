@@ -111,11 +111,11 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
     def "should update invoice by id"() {
         given:
         def id = addInvoice(firstInvoice)
-
+        def updatedInvoice = secondInvoice
         when:
         mockMvc.perform(
                 put("$INVOICES_ENDPOINT$id")
-                        .content(getInvoiceAsJson(secondInvoice))
+                        .content(getInvoiceAsJson(updatedInvoice))
                         .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())
@@ -123,6 +123,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         then:
         secondInvoice.setId(id)
         getInvoiceById(id) == secondInvoice
+
     }
 
     def "should delete invoice by id"() {

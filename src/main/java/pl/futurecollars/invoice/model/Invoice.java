@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -41,7 +42,7 @@ public class Invoice {
   @ApiModelProperty(value = "Company who bought the product/service", required = true)
   private Company buyer;
 
-  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   @ApiModelProperty(value = "List of products/services", required = true)
   private List<InvoiceEntry> invoiceEntries;
 

@@ -1,5 +1,6 @@
 package pl.futurecollars.invoice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import java.math.BigDecimal;
 import javax.persistence.CascadeType;
@@ -21,6 +22,7 @@ import lombok.NoArgsConstructor;
 public class InvoiceEntry {
 
   @Id
+  @JsonIgnore
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
