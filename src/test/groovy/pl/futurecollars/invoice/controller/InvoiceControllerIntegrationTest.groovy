@@ -50,16 +50,11 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         def expectedInvoices = addUniqueInvoices(5)
         def verifiedInvoice = expectedInvoices.get(2)
 
-        println verifiedInvoice
-
         when:
         def invoice = getInvoiceById(verifiedInvoice.getId())
 
-        println invoice
-
         then:
-        1 == 1
-        //invoice == verifiedInvoice
+        invoice == verifiedInvoice
     }
 
     def "should get status 404 when invoice id is not found when getting invoice by id"() {
