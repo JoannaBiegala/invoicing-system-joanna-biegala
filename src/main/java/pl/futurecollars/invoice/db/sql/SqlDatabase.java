@@ -30,10 +30,10 @@ public class SqlDatabase implements Database {
       + "inner join companies c1 on i.seller = c1.id "
       + "inner join companies c2 on i.buyer = c2.id";
 
-  private JdbcTemplate jdbcTemplate;
+  private final JdbcTemplate jdbcTemplate;
   private final Map<Vat, Integer> vatToId = new HashMap<>();
   private final Map<Integer, Vat> idToVat = new HashMap<>();
-  private GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+  private final GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
   public SqlDatabase(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
