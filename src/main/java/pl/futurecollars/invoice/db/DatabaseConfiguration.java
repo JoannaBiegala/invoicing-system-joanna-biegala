@@ -9,8 +9,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import pl.futurecollars.invoice.db.file.FileRepository;
-import pl.futurecollars.invoice.db.jpa.InvoiceRepository;
-import pl.futurecollars.invoice.db.jpa.JpaDatabase;
 import pl.futurecollars.invoice.db.memory.MemoryRepository;
 import pl.futurecollars.invoice.db.sql.SqlDatabase;
 import pl.futurecollars.invoice.utils.FilesService;
@@ -22,10 +20,15 @@ import pl.futurecollars.invoice.utils.JsonService;
 public class DatabaseConfiguration {
 
   @Bean
-  @ConditionalOnProperty(value = "database.type", havingValue = "jpa")
-  public Database jpaDatabase(InvoiceRepository invoiceRepository) {
-    log.info("Running on jpa database");
-    return new JpaDatabase(invoiceRepository);
+  @ConditionalOnProperty(value = "database.type", havingValue = "in-file")
+  public FilesService filesService() {
+    return new FilesService();
+  }
+
+  @Bean
+  @ConditionalOnProperty(value = "database.type", havingValue = "in-file")
+  public JsonService jsonService() {
+    return new JsonService();
   }
 
   @Bean
