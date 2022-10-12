@@ -2,16 +2,19 @@ package pl.futurecollars.invoice.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "cars")
 @Builder
 @Data
 @NoArgsConstructor
@@ -27,6 +30,7 @@ public class Car {
   @ApiModelProperty(value = "Car registration number", required = true, example = "KRA1234L")
   private String registrationNumber;
 
+  @Column(name = "personal_user")
   @ApiModelProperty(value = "Specifies if car is used also for personal reasons", required = true, example = "true")
   private boolean personalUse;
 

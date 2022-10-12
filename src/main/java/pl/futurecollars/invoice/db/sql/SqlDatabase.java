@@ -2,12 +2,9 @@ package pl.futurecollars.invoice.db.sql;
 
 import java.sql.Date;
 import java.sql.PreparedStatement;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import javax.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -33,23 +30,10 @@ public class SqlDatabase implements Database {
       + "inner join companies c2 on i.buyer = c2.id";
 
   private JdbcTemplate jdbcTemplate;
-  private final Map<Vat, Integer> vatToId = new HashMap<>();
-  private final Map<Integer, Vat> idToVat = new HashMap<>();
   private GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
 
   public SqlDatabase(JdbcTemplate jdbcTemplate) {
     this.jdbcTemplate = jdbcTemplate;
-  }
-
-  @PostConstruct
-  void initVatRatesMap() {
-    jdbcTemplate.query("select * from vat",
-        rs -> {
-          Vat vat = Vat.valueOf("Vat_" + rs.getString("name"));
-          int id = rs.getInt("id");
-          vatToId.put(vat, id);
-          idToVat.put(id, vat);
-        });
   }
 
   @Override
@@ -77,7 +61,7 @@ public class SqlDatabase implements Database {
       ps.setBigDecimal(2, entry.getQuantity());
       ps.setBigDecimal(3, entry.getNetPrice());
       ps.setBigDecimal(4, entry.getVatValue());
-      ps.setInt(5, vatToId.get(entry.getVatRate()));
+      ps.setString(5, entry.getVatRate().name());
       ps.setObject(6, insertCarAndGetItId(entry.getExpenseRelatedToCar()));
       return ps;
     }, keyHolder);
@@ -273,7 +257,7 @@ public class SqlDatabase implements Database {
               .quantity(response.getBigDecimal("quantity"))
               .netPrice(response.getBigDecimal("net_price"))
               .vatValue(response.getBigDecimal("vat_value"))
-              .vatRate(idToVat.get(response.getInt("vat_rate")))
+              .vatRate(Vat.valueOf(response.getString("vat_rate")))
               .expenseRelatedToCar(response.getObject("registration_number") != null
                   ? Car.builder()
                   .registrationNumber(response.getString("registration_number"))

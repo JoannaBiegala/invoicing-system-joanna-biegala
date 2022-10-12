@@ -9,14 +9,18 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
+@Table(name = "invoices")
 @Builder
 @Data
 @AllArgsConstructor
@@ -34,14 +38,17 @@ public class Invoice {
   @ApiModelProperty(value = "Date invoice was created", required = true)
   private LocalDate date;
 
+  @JoinColumn(name = "seller")
   @OneToOne(cascade = CascadeType.ALL)
   @ApiModelProperty(value = "Company who is selling the product/service", required = true)
   private Company seller;
 
+  @JoinColumn(name = "buyer")
   @OneToOne(cascade = CascadeType.ALL)
   @ApiModelProperty(value = "Company who bought the product/service", required = true)
   private Company buyer;
 
+  @JoinTable(name = "invoice_invoice_entry", inverseJoinColumns = @JoinColumn(name = "invoice_entry_id"))
   @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
   @ApiModelProperty(value = "List of products/services", required = true)
   private List<InvoiceEntry> invoiceEntries;

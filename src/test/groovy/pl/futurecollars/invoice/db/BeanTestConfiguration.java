@@ -11,7 +11,8 @@ public class BeanTestConfiguration {
   @Bean
   @ConditionalOnExpression(
       "'${database.type}' == 'in-memory' || "
-          + "'${database.type}' == 'sql'"
+          + "'${database.type}' == 'sql' || "
+          + "'${database.type}' == 'jpa'"
   )
   public JsonService jsonService() {
     return new JsonService();
