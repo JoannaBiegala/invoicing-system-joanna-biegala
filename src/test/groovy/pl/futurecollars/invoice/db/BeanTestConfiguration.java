@@ -1,6 +1,6 @@
 package pl.futurecollars.invoice.db;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.futurecollars.invoice.utils.JsonService;
@@ -9,7 +9,11 @@ import pl.futurecollars.invoice.utils.JsonService;
 public class BeanTestConfiguration {
 
   @Bean
-  @ConditionalOnProperty(value = "database.type", havingValue = "in-memory")
+  @ConditionalOnExpression(
+      "'${database.type}' == 'in-memory' || "
+          + "'${database.type}' == 'sql' || "
+          + "'${database.type}' == 'jpa'"
+  )
   public JsonService jsonService() {
     return new JsonService();
   }
