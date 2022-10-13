@@ -12,7 +12,7 @@ import java.nio.file.Path
 
 import static pl.futurecollars.invoice.TestHelpers.invoice
 
-class FileBasedDatabaseUnitTest extends Specification {
+class FileRepositoryUnitTest extends Specification {
 
     private final databasePath = Path.of("test_db/invoices.json")
     private final FilesService filesServiceMock = Mock(FilesService)
@@ -80,7 +80,7 @@ class FileBasedDatabaseUnitTest extends Specification {
         database.delete(1)
         then:
         def exception = thrown(RuntimeException)
-        exception.message == "Failed to delete invoice with id: 1"
+        exception.message == "Database failed to get invoice with id: 1"
     }
 
 }
