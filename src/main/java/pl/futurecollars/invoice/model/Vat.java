@@ -1,7 +1,6 @@
 package pl.futurecollars.invoice.model;
 
 import java.math.BigDecimal;
-import javax.persistence.Table;
 
 public enum Vat {
 
