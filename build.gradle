@@ -3,12 +3,13 @@ buildscript {
         flywayVersion = '9.4.0'
         h2Version = '2.1.214'
         lombokVersion = '1.18.24'
+        mongoVersion = '3.12.8'
+        postgresqlVersion = '42.5.0'
         spockVersion = '2.3-groovy-3.0'
         springBootVersion = '2.7.3'
         springDependencyManagementVersion = '1.0.13.RELEASE'
         springFoxStarterVersion = '3.0.0'
         springFoxUiVersion = '3.0.0'
-        postgresqlVersion = '42.5.0'
     }
 }
 
@@ -37,6 +38,7 @@ dependencies {
     implementation "io.springfox:springfox-boot-starter:${springFoxStarterVersion}"
     implementation "io.springfox:springfox-swagger-ui:${springFoxUiVersion}"
     implementation "org.flywaydb:flyway-core:${flywayVersion}"
+    implementation "org.mongodb:mongo-java-driver:${mongoVersion}"
 
     runtimeOnly "com.h2database:h2:${h2Version}"
     runtimeOnly "org.postgresql:postgresql:${postgresqlVersion}"
