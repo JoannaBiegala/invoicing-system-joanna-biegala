@@ -6,7 +6,6 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import java.io.IOException;
 import java.nio.file.Path;

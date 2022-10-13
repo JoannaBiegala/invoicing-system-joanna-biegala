@@ -7,10 +7,10 @@ import org.bson.Document;
 
 public class MongoIdProvider {
 
-  private final static String LAST_VALUE_KEY = "lastValue";
-  private final static String ID_VALUE = "invoiceCounter";
-  private final static String ID_KEY = "_id";
-  private final static Document FILTER_DOCUMENT = new Document(ID_KEY, ID_VALUE);
+  private static final String LAST_VALUE_KEY = "lastValue";
+  private static final String ID_VALUE = "invoiceCounter";
+  private static final String ID_KEY = "_id";
+  private static final Document FILTER_DOCUMENT = new Document(ID_KEY, ID_VALUE);
   private final MongoCollection<Document> idCollection;
   private long lastValue = 0;
 
