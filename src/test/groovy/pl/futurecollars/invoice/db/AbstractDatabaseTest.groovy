@@ -32,24 +32,33 @@ abstract class AbstractDatabaseTest extends Specification {
             assert invoiceFromDb.toString() == expectedInvoice.toString()
         }
     }
+    def "should save invoices returning sequential id"() {
+        when:
+        def ids = invoices.collect { it.id = database.save(it) }
 
-    def "should return correct number of invoices saved in database"() {
-        given:
-        def sizeBeforeSave = database.getAll().size()
-        invoices.forEach({ database.save(it) })
-
-        expect:
-        assert database.getAll().size() == invoices.size() + sizeBeforeSave
+        then:
+        (1..invoices.size() - 1).forEach { assert ids[it] == ids[0] + it }
     }
 
-    def "findById should returns null when there is no invoice with given id"() {
-        given:
-        deleteAllInvoices()
-        def deleteOptional = database.delete(1)
+    def "should invoice have id set to correct value"() {
+        when:
+        def ids = invoices.collect { it.id = database.save(it) }
 
-        expect:
-        database.findById(1).isEmpty()
-        deleteOptional.isEmpty()
+        then:
+        ids.forEach { assert database.findById(it).isPresent() }
+        ids.forEach { assert database.findById(it).get().getId() == it }
+    }
+
+    def "should get by id returns expected invoice"() {
+        when:
+        def ids = invoices.collect { it.id = database.save(it) }
+
+        then:
+        ids.forEach {
+            def expectedInvoice = resetIds(invoices.get((int) (it - ids[0]))).toString()
+            def invoiceFromDb = resetIds(database.findById(it).get()).toString()
+            assert invoiceFromDb == expectedInvoice
+        }
     }
 
     def "should return empty collection on getAll method call if there were no invoices in database"() {

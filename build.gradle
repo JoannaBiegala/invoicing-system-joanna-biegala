@@ -131,6 +131,11 @@ task testWithJpaFlywayDatabase(type: Test) {
     useJUnitPlatform()
 }
 
+task testWithMongoBasedDatabase(type: Test) {
+    systemProperty 'spring.profiles.active', 'mongo'
+    useJUnitPlatform()
+}
+
 check.dependsOn testWithFileDatabase
 check.dependsOn testWithMemoryDatabase
 check.dependsOn testWithSqlDatabase
