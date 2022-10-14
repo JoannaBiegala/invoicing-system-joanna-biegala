@@ -18,20 +18,6 @@ abstract class AbstractDatabaseTest extends Specification {
         database = getDatabaseInstance()
     }
 
-    def "should save invoices returning sequential id, id should have correct value, findById should return saved invoice"() {
-        when:
-        def ids = invoices.collect({it.id = database.save(it) })
-
-        then:
-        ids == (1L..invoices.size()).collect()
-        ids.forEach({ assert database.findById(it).isPresent() })
-        ids.forEach({ assert database.findById(it).get().getId() == it })
-        ids.forEach { Long it ->
-            def expectedInvoice = resetIds(invoices.get(it - 1 as int))
-            def invoiceFromDb = resetIds(database.findById(it).get())
-            assert invoiceFromDb.toString() == expectedInvoice.toString()
-        }
-    }
     def "should save invoices returning sequential id"() {
         when:
         def ids = invoices.collect { it.id = database.save(it) }

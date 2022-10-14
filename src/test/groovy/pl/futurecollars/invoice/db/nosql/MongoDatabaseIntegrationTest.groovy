@@ -11,12 +11,12 @@ import pl.futurecollars.invoice.db.Database
 class MongoDatabaseIntegrationTest extends AbstractDatabaseTest {
 
     @Autowired
-    private MongoBasedDatabase mongoDatabase
+    private MongoBasedDatabase mongoBasedDatabase
 
     @Override
     Database getDatabaseInstance() {
-        assert mongoDatabase != null
-        mongoDatabase
+        assert mongoBasedDatabase != null
+        mongoBasedDatabase
     }
 
 }

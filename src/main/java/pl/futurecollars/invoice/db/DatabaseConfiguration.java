@@ -14,6 +14,7 @@ import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -81,19 +82,19 @@ public class DatabaseConfiguration {
   }
 
   @Bean
-  @ConditionalOnProperty(value = "database.type", havingValue = "in-file")
+  @ConditionalOnProperty(value = "database.type", havingValue = "infile")
   public FilesService filesService() {
     return new FilesService();
   }
 
   @Bean
-  @ConditionalOnProperty(value = "database.type", havingValue = "in-file")
+  @ConditionalOnExpression("'${database.type}'.equals('infile') or '${database.type}'.equals('mongo')")
   public JsonService jsonService() {
     return new JsonService();
   }
 
   @Bean
-  @ConditionalOnProperty(value = "database.type", havingValue = "in-file")
+  @ConditionalOnProperty(value = "database.type", havingValue = "infile")
   public IdService idService(
       FilesService filesService,
       @Value("${database.idPath}") String idPathString) throws IOException {
@@ -103,7 +104,7 @@ public class DatabaseConfiguration {
   }
 
   @Bean
-  @ConditionalOnProperty(value = "database.type", havingValue = "in-file")
+  @ConditionalOnProperty(value = "database.type", havingValue = "infile")
   public Database fileRepository(
       FilesService filesService,
       JsonService jsonService,

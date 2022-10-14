@@ -53,6 +53,33 @@ dependencies {
 
 }
 
+group = 'pl.futurecollars'
+version = '0.0.1-SNAPSHOT'
+
+jacocoTestCoverageVerification {
+    executionData tasks.withType(Test)
+    violationRules {
+        rule {
+            limit {
+                counter = 'BRANCH'
+                minimum = 0.90
+            }
+        }
+        rule {
+            limit {
+                counter = 'LINE'
+                minimum = 0.90
+            }
+        }
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: ['pl/futurecollars/invoicing/InvoiceApplication.class', 'pl/futurecollars/invoicing/db/DatabaseConfiguration.class'])
+        }))
+    }
+}
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(14)
@@ -60,22 +87,17 @@ java {
     }
 }
 
-group = 'pl.futurecollars'
-version = '0.0.1-SNAPSHOT'
-
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
+check {
+    finalizedBy jacocoTestReport
 }
 
-test {
-    finalizedBy jacocoTestReport
+check {
     finalizedBy jacocoTestCoverageVerification
 }
 
-tasks.named('test') {
-    useJUnitPlatform()
+jacocoTestReport {
+    executionData tasks.withType(Test)
+    dependsOn check
 }
 
 checkstyle {
@@ -83,27 +105,6 @@ checkstyle {
     ignoreFailures = false
     maxWarnings = 0
     maxErrors = 0
-}
-
-jacocoTestCoverageVerification {
-    violationRules {
-        rule {
-            limit {
-                counter = 'BRANCH'
-                minimum = 0.80
-            }
-        }
-        rule {
-            limit {
-                counter = 'LINE'
-                minimum = 0.85
-            }
-        }
-    }
-}
-
-jacocoTestReport {
-    dependsOn test
 }
 
 task testWithFileDatabase(type: Test) {
@@ -131,7 +132,7 @@ task testWithJpaFlywayDatabase(type: Test) {
     useJUnitPlatform()
 }
 
-task testWithMongoBasedDatabase(type: Test) {
+task testWithMongoDatabase(type: Test) {
     systemProperty 'spring.profiles.active', 'mongo'
     useJUnitPlatform()
 }
@@ -141,3 +142,4 @@ check.dependsOn testWithMemoryDatabase
 check.dependsOn testWithSqlDatabase
 check.dependsOn testWithJpaDatabase
 check.dependsOn testWithJpaFlywayDatabase
+check.dependsOn testWithMongoDatabase
