@@ -151,7 +151,7 @@ public class SqlDatabase implements Database {
       deleteEntriesRelatedToInvoice(id);
       addEntriesRelatedToInvoice(id, updatedInvoice);
     } else {
-      throw new NullPointerException("Failed to update invoice with id: " + id);
+      throw new RuntimeException("Failed to update invoice with id: " + id);
     }
   }
 
