@@ -2,6 +2,7 @@ package pl.futurecollars.invoice.service.company;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Service;
 import pl.futurecollars.invoice.db.Database;
 import pl.futurecollars.invoice.model.Company;

@@ -39,9 +39,9 @@ public class MemoryDatabase<T extends WithId> implements Database<T> {
 
   @Override
   public Optional<T> delete(long id) {
-    Optional<T> invoiceOptional = findById(id);
+    Optional<T> itemOptional = findById(id);
     items.remove(id);
-    return invoiceOptional;
+    return itemOptional;
   }
 
   @Override
