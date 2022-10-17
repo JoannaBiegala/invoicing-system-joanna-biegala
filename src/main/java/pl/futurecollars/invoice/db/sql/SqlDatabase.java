@@ -43,14 +43,11 @@ public class SqlDatabase implements Database {
     long buyerId = insertCompany(invoice.getBuyer());
     long sellerId = insertCompany(invoice.getSeller());
     long invoiceId = insertInvoice(invoice, buyerId, sellerId);
-    for (InvoiceEntry entry : invoice.getInvoiceEntries()) {
-      long invoiceEntryId = insertInvoice_entries(entry);
-      insertInvoice_invoice_entry(invoiceId, invoiceEntryId);
-    }
+    addEntriesRelatedToInvoice(invoiceId, invoice);
     return invoiceId;
   }
 
-  private long insertInvoice_entries(InvoiceEntry entry) {
+  private long insertInvoiceEntries(InvoiceEntry entry) {
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection
           .prepareStatement(
@@ -68,7 +65,7 @@ public class SqlDatabase implements Database {
     return Objects.requireNonNull(keyHolder.getKey()).longValue();
   }
 
-  private void insertInvoice_invoice_entry(long invoiceId, long invoiceEntryId) {
+  private void insertInvoiceInvoiceEntry(long invoiceId, long invoiceEntryId) {
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection.prepareStatement(
           "insert into invoice_invoice_entry (invoice_id, invoice_entry_id) values (?, ?);");
@@ -110,7 +107,6 @@ public class SqlDatabase implements Database {
     if (car == null) {
       return null;
     }
-    GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
     jdbcTemplate.update(connection -> {
       PreparedStatement ps = connection
           .prepareStatement(
@@ -182,8 +178,8 @@ public class SqlDatabase implements Database {
 
   private void addEntriesRelatedToInvoice(long invoiceId, Invoice invoice) {
     for (InvoiceEntry entry : invoice.getInvoiceEntries()) {
-      long invoiceEntryId = insertInvoice_entries(entry);
-      insertInvoice_invoice_entry(invoiceId, invoiceEntryId);
+      long invoiceEntryId = insertInvoiceEntries(entry);
+      insertInvoiceInvoiceEntry(invoiceId, invoiceEntryId);
     }
   }
 
