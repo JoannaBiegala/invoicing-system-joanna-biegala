@@ -19,7 +19,7 @@ public class CompanyController implements CompanyApi {
 
   @Override
   public ResponseEntity<Company> getCompany(@PathVariable long id) {
-    return ResponseEntity.of(companyService.findCompanyForId(id));
+    return ResponseEntity.of(companyService.findCompanyById(id));
   }
 
   @Override

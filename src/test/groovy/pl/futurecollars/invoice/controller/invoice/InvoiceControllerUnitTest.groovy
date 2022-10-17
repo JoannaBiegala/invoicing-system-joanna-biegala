@@ -1,4 +1,4 @@
-package pl.futurecollars.invoice.controller
+package pl.futurecollars.invoice.controller.invoice
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -10,17 +10,15 @@ import org.springframework.test.web.servlet.ResultActions
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import pl.futurecollars.invoice.TestHelpers
 import pl.futurecollars.invoice.model.Invoice
 import pl.futurecollars.invoice.utils.JsonService
 import spock.lang.Specification
 import spock.lang.Stepwise
-
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.LocalDate
 
-import static pl.futurecollars.invoice.TestHelpers.INVOICES_ENDPOINT
+import static pl.futurecollars.invoice.TestHelpers.*
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @Stepwise
@@ -50,7 +48,7 @@ class InvoiceControllerUnitTest extends Specification {
 
     def "should get status 404 when you try to update invoice on empty database"() {
         given:
-        def originalInvoice = TestHelpers.invoice(1)
+        def originalInvoice = invoice(1)
         def expectedInvoice = originalInvoice
         expectedInvoice.id = 1
         expectedInvoice.date = LocalDate.now()
@@ -93,7 +91,7 @@ class InvoiceControllerUnitTest extends Specification {
 
     def "should save invoice"() {
         given:
-        def invoice = TestHelpers.invoice(1)
+        def invoice = invoice(1)
         def invoiceAsJson = jsonService.toJson(invoice)
 
         expect:
@@ -110,7 +108,7 @@ class InvoiceControllerUnitTest extends Specification {
 
     def "should get invoice"() {
 
-        def invoice = TestHelpers.invoice(1)
+        def invoice = invoice(1)
         def invoiceAsJson = jsonService.toJson(invoice)
 
         def savedInvoiceId = mockMvc.perform(
@@ -140,12 +138,12 @@ class InvoiceControllerUnitTest extends Specification {
                 MockMvcRequestBuilders
                         .post("$INVOICES_ENDPOINT/")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonService.toJson(TestHelpers.firstInvoice)))
+                        .content(jsonService.toJson(firstInvoice)))
                 .andReturn()
                 .getResponse()
                 .contentAsString
 
-        def invoiceToUpdate = TestHelpers.secondInvoice
+        def invoiceToUpdate = secondInvoice
 
         when:
         def responseUpdate = mockMvc.perform(
@@ -167,7 +165,7 @@ class InvoiceControllerUnitTest extends Specification {
 
     def "should delete invoice"() {
 
-        def invoice = TestHelpers.invoice(1)
+        def invoice = invoice(1)
         def invoiceAsJson = jsonService.toJson(invoice)
 
         def savedInvoiceId = mockMvc.perform(

@@ -1,4 +1,4 @@
-package pl.futurecollars.invoice.controller
+package pl.futurecollars.invoice.controller.invoice
 
 import com.mongodb.client.MongoDatabase
 import org.springframework.beans.factory.annotation.Autowired
@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.ApplicationContext
 import org.springframework.http.MediaType
+import pl.futurecollars.invoice.controller.AbstractControllerTest
 import pl.futurecollars.invoice.model.Invoice
 import spock.lang.Requires
 import spock.lang.Stepwise
@@ -69,7 +70,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         def verifiedInvoice = expectedInvoices.get(2)
 
         when:
-        def invoice = getById(verifiedInvoice.getId(),INVOICES_ENDPOINT, Invoice.class)
+        def invoice = getById(verifiedInvoice.getId(), INVOICES_ENDPOINT, Invoice.class)
 
         then:
         invoice == verifiedInvoice
@@ -135,7 +136,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
         then:
         secondInvoice.setId(id)
-        getById(id,INVOICES_ENDPOINT,Invoice.class) == secondInvoice
+        getById(id, INVOICES_ENDPOINT,Invoice.class) == secondInvoice
 
     }
 
@@ -144,7 +145,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         def invoices = addUniqueInvoices(69)
 
         expect:
-        invoices.each { invoice -> delete(invoice.getId(),INVOICES_ENDPOINT) }
+        invoices.each { invoice -> delete(invoice.getId(), INVOICES_ENDPOINT) }
         getAllInvoices().size() == 0
     }
 

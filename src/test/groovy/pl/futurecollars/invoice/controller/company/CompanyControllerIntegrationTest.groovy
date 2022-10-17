@@ -1,4 +1,4 @@
-package pl.futurecollars.invoice.controller
+package pl.futurecollars.invoice.controller.company
 
 import com.mongodb.client.MongoDatabase
 import org.springframework.beans.factory.annotation.Autowired
@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.ApplicationContext
 import org.springframework.http.MediaType
+import pl.futurecollars.invoice.controller.AbstractControllerTest
 import pl.futurecollars.invoice.model.Company
 import spock.lang.Requires
 import spock.lang.Stepwise
@@ -15,11 +16,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import static pl.futurecollars.invoice.TestHelpers.COMPANIES_ENDPOINT
-import static pl.futurecollars.invoice.TestHelpers.company
-import static pl.futurecollars.invoice.TestHelpers.firstCompany
-import static pl.futurecollars.invoice.TestHelpers.secondCompany
-import static pl.futurecollars.invoice.TestHelpers.thirdCompany
+import static pl.futurecollars.invoice.TestHelpers.*
+
 
 @AutoConfigureMockMvc
 @SpringBootTest

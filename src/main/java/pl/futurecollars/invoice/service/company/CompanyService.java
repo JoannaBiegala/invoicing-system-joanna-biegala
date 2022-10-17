@@ -19,7 +19,7 @@ public class CompanyService {
     return companyDatabase.save(company);
   }
 
-  public Optional<Company> findCompanyForId(long id) {
+  public Optional<Company> findCompanyById(long id) {
     return companyDatabase.findById(id);
   }
 

@@ -1,8 +1,7 @@
-package pl.futurecollars.invoice.service
+package pl.futurecollars.invoice.service.invoice
 
 
 import pl.futurecollars.invoice.db.Database
-import pl.futurecollars.invoice.service.invoice.InvoiceService
 import spock.lang.Specification
 
 import static pl.futurecollars.invoice.TestHelpers.invoice
@@ -52,14 +51,14 @@ class InvoiceServiceUnitTest extends Specification {
         given:
         def invoiceId = 21L
         when:
-        service.findForId(invoiceId)
+        service.findInvoiceById(invoiceId)
         then:
         1 * database.findById(invoiceId)
     }
 
     def "calling getAll() should delegate to database getAll() method"() {
         when:
-        service.getAll()
+        service.getAllInvoices()
         then:
         1 * database.getAll()
     }
@@ -87,5 +86,3 @@ class InvoiceServiceUnitTest extends Specification {
     }
 
 }
-
-

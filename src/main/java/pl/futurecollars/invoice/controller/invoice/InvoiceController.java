@@ -19,12 +19,12 @@ public class InvoiceController implements InvoiceApi {
 
   @Override
   public ResponseEntity<Invoice> getInvoice(@PathVariable long id) {
-    return ResponseEntity.of(invoiceService.findForId(id));
+    return ResponseEntity.of(invoiceService.findInvoiceById(id));
   }
 
   @Override
   public List<Invoice> getAll() {
-    return invoiceService.getAll();
+    return invoiceService.getAllInvoices();
   }
 
   @Override

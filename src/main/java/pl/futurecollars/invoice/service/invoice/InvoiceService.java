@@ -19,7 +19,7 @@ public class InvoiceService {
     return database.save(invoice);
   }
 
-  public Optional<Invoice> findForId(long id) {
+  public Optional<Invoice> findInvoiceById(long id) {
     return database.findById(id);
   }
 
@@ -39,7 +39,7 @@ public class InvoiceService {
     return invoiceToDelete.isPresent();
   }
 
-  public List<Invoice> getAll() {
+  public List<Invoice> getAllInvoices() {
     return database.getAll();
   }
 
