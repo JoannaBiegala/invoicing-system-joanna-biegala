@@ -1,6 +1,8 @@
 package pl.futurecollars.invoice.controller
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import pl.futurecollars.invoice.model.Company
@@ -20,6 +22,8 @@ import static pl.futurecollars.invoice.TestHelpers.invoice
 import static pl.futurecollars.invoice.TestHelpers.INVOICES_ENDPOINT
 import static pl.futurecollars.invoice.TestHelpers.TAX_ENDPOINT
 
+@AutoConfigureMockMvc
+@SpringBootTest
 class AbstractControllerTest extends Specification {
 
     @Autowired
@@ -28,64 +32,45 @@ class AbstractControllerTest extends Specification {
     @Autowired
     JsonService jsonService
 
-    def setup() {
-        getAllInvoices().each { invoice -> delete(invoice.id, INVOICES_ENDPOINT) }
+
+    long addInvoiceAndReturnId(Invoice invoice) {
+        addAndReturnId(invoice, INVOICES_ENDPOINT)
     }
 
-    long add(Object object, String endpoint) {
-        Long.valueOf(
-                mockMvc.perform(
-                        post(endpoint)
-                                .content(getAsJson(object))
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
-                        .andExpect(status().isOk())
-                        .andReturn()
-                        .response
-                        .contentAsString
-        )
+    int addCompanyAndReturnId(Company company) {
+        addAndReturnId(company, COMPANIES_ENDPOINT)
     }
 
-    void delete(long id, String endpoint) {
-        mockMvc.perform(
-                delete("$endpoint/$id"))
-                .andExpect(status().isOk())
+    void deleteInvoice(long id) {
+        mockMvc.perform(delete("$INVOICES_ENDPOINT/$id"))
+                .andExpect(status().is2xxSuccessful())
     }
 
-    Object getById(long id, String endpoint, Class clazz) {
-        def objectAsString = mockMvc.perform(get("$endpoint/$id"))
-                .andExpect(status().isOk())
-                .andReturn()
-                .response
-                .contentAsString
+    void deleteCompany(long id) {
+        mockMvc.perform(delete("$COMPANIES_ENDPOINT/$id"))
+                .andExpect(status().is2xxSuccessful())
+    }
 
-        return getAsObject(objectAsString, clazz)
+    Invoice getInvoiceById(long id) {
+        getById(id, Invoice, INVOICES_ENDPOINT)
+    }
+
+    Company getCompanyById(long id) {
+        getById(id, Company, COMPANIES_ENDPOINT)
     }
 
     List<Invoice> getAllInvoices() {
-        def response = mockMvc.perform(get(INVOICES_ENDPOINT))
-                .andExpect(status().isOk())
-                .andReturn()
-                .response
-                .contentAsString
-
-        return jsonService.toObject(response, Invoice[])
+        getAll(Invoice[], INVOICES_ENDPOINT)
     }
 
     List<Company> getAllCompanies() {
-        def response = mockMvc.perform(get(COMPANIES_ENDPOINT))
-                .andExpect(status().isOk())
-                .andReturn()
-                .response
-                .contentAsString
-
-        return jsonService.toObject(response, Company[])
+        getAll(Company[], COMPANIES_ENDPOINT)
     }
 
     List<Invoice> addUniqueInvoices(int count) {
         (1..count).collect { id ->
             def invoice = invoice(id)
-            invoice.id = add(invoice, INVOICES_ENDPOINT)
+            invoice.id = addInvoiceAndReturnId(invoice)
             return invoice
         }
     }
@@ -93,7 +78,7 @@ class AbstractControllerTest extends Specification {
     List<Company> addUniqueCompanies(int count) {
         (1..count).collect { id ->
             def company = company(id)
-            company.id = add(company, COMPANIES_ENDPOINT)
+            company.id = addCompanyAndReturnId(company)
             return company
         }
     }
@@ -142,4 +127,38 @@ class AbstractControllerTest extends Specification {
         }
     }
 
+    private <T> int addAndReturnId(T item, String endpoint) {
+        Integer.valueOf(
+                mockMvc.perform(
+                        post(endpoint)
+                                .content(jsonService.toJson(item))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                        .andExpect(status().isOk())
+                        .andReturn()
+                        .response
+                        .contentAsString
+        )
+    }
+
+    private <T> T getAll(Class<T> clazz, String endpoint) {
+        def response = mockMvc.perform(get(endpoint))
+                .andExpect(status().isOk())
+                .andReturn()
+                .response
+                .contentAsString
+
+        jsonService.toObject(response, clazz)
+    }
+
+
+    private <T> T getById(long id, Class<T> clazz, String endpoint) {
+        def invoiceAsString = mockMvc.perform(get("$endpoint/$id"))
+                .andExpect(status().isOk())
+                .andReturn()
+                .response
+                .contentAsString
+
+        jsonService.toObject(invoiceAsString, clazz)
+    }
 }

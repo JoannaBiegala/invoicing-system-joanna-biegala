@@ -11,7 +11,8 @@ import static pl.futurecollars.invoice.TestHelpers.*
 class TaxCalculatorControllerIntegrationTest extends AbstractControllerTest {
 
     def setup() {
-        getAllInvoices().each { invoice -> delete(invoice.id, INVOICES_ENDPOINT) }
+        getAllInvoices().each { invoice -> deleteInvoice(invoice.id) }
+        getAllCompanies().each { company -> deleteInvoice(company.id) }
     }
 
     def "should return response with correct values when there are no invoices in database"() {
@@ -40,7 +41,7 @@ class TaxCalculatorControllerIntegrationTest extends AbstractControllerTest {
 
     def "should return response with correct values when there is invoice in database"() {
         given:
-        add(firstInvoice, TAX_ENDPOINT)
+        addInvoiceAndReturnId(firstInvoice)
 
         when:
         def taxCalculatorResponse = getTaxCalculatorResult(firstCompany)
@@ -64,10 +65,11 @@ class TaxCalculatorControllerIntegrationTest extends AbstractControllerTest {
     }
 
     def "should return response with correct values when there are invoices in database"() {
+
         given:
-        add(firstInvoice, TAX_ENDPOINT)
-        add(secondInvoice, TAX_ENDPOINT)
-        add(thirdInvoice, TAX_ENDPOINT)
+        addInvoiceAndReturnId(firstInvoice)
+        addInvoiceAndReturnId(secondInvoice)
+        addInvoiceAndReturnId(thirdInvoice)
 
         when:
         def taxCalculatorResponse = getTaxCalculatorResult(firstCompany)
@@ -92,7 +94,7 @@ class TaxCalculatorControllerIntegrationTest extends AbstractControllerTest {
 
     def "should return response with correct values when there are invoice with payment for car, which is used also for personal reasons"() {
         given:
-        add(fourthInvoice, TAX_ENDPOINT)
+        addInvoiceAndReturnId(fourthInvoice)
 
         when:
         def taxCalculatorResponse = getTaxCalculatorResult(firstCompany)
@@ -117,7 +119,7 @@ class TaxCalculatorControllerIntegrationTest extends AbstractControllerTest {
 
     def "should return response with correct values when there are invoice with payment for car, which is used for business purposes only"() {
         given:
-        add(fifthInvoice, TAX_ENDPOINT)
+        addInvoiceAndReturnId(fifthInvoice)
 
         when:
         def taxCalculatorResponse = getTaxCalculatorResult(firstCompany)

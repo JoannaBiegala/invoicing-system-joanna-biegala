@@ -1,99 +1,75 @@
 package pl.futurecollars.invoice.controller.company
 
-import com.mongodb.client.MongoDatabase
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.context.ApplicationContext
 import org.springframework.http.MediaType
 import pl.futurecollars.invoice.controller.AbstractControllerTest
-import pl.futurecollars.invoice.model.Company
-import spock.lang.Requires
-import spock.lang.Stepwise
 import spock.lang.Unroll
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import static pl.futurecollars.invoice.TestHelpers.*
+import static pl.futurecollars.invoice.TestHelpers.COMPANIES_ENDPOINT
+import static pl.futurecollars.invoice.TestHelpers.company
 
-
-@AutoConfigureMockMvc
-@SpringBootTest
 @Unroll
-@Stepwise
 class CompanyControllerIntegrationTest extends AbstractControllerTest {
 
-    @Autowired
-    private ApplicationContext context
-
-    @Requires({ System.getProperty('spring.profiles.active', '').contains('mongo') })
-    def "database is dropped to ensure clean state"() {
-        expect:
-        MongoDatabase mongoDatabase = context.getBean(MongoDatabase)
-        mongoDatabase.drop()
-    }
 
     def setup() {
-        getAllCompanies().each { company -> delete(company.id, COMPANIES_ENDPOINT) }
+        getAllInvoices().each { invoice -> deleteInvoice(invoice.id) }
+        getAllCompanies().each { company -> deleteCompany(company.id) }
     }
 
-    def "should return empty array when company database is empty"() {
+
+    def "empty array is returned when no companies were added"() {
         expect:
         getAllCompanies() == []
     }
 
-    def "should add company and return sequential id"() {
+    def "add company returns sequential id"() {
         expect:
-        def id = add(firstCompany, COMPANIES_ENDPOINT)
-        add(firstCompany, COMPANIES_ENDPOINT) == id + 1
-        add(firstCompany, COMPANIES_ENDPOINT) == id + 2
-        add(firstCompany, COMPANIES_ENDPOINT) == id + 3
-        add(firstCompany, COMPANIES_ENDPOINT) == id + 4
+        def firstId = addCompanyAndReturnId(company(1))
+        addCompanyAndReturnId(company(2)) == firstId + 1
+        addCompanyAndReturnId(company(3)) == firstId + 2
+        addCompanyAndReturnId(company(4)) == firstId + 3
+        addCompanyAndReturnId(company(5)) == firstId + 4
     }
 
-    def "should return all companies"() {
+    def "all companies are returned when getting all companies"() {
         given:
         def numberOfCompanies = 3
-        add(firstCompany, COMPANIES_ENDPOINT)
-        add(secondCompany, COMPANIES_ENDPOINT)
-        add(thirdCompany, COMPANIES_ENDPOINT)
+        def expectedCompanies = addUniqueCompanies(numberOfCompanies)
 
         when:
         def companies = getAllCompanies()
 
         then:
         companies.size() == numberOfCompanies
+        companies == expectedCompanies
     }
 
-    def "should return correct company when getting by id"() {
+    def "correct company is returned when getting by id"() {
         given:
         def expectedCompanies = addUniqueCompanies(5)
-        def verifiedCompany = expectedCompanies.get(2)
+        def expectedCompany = expectedCompanies.get(2)
 
         when:
-        def company = getById(verifiedCompany.getId(), COMPANIES_ENDPOINT, Company.class)
+        def company = getCompanyById(expectedCompany.getId())
 
         then:
-        company == verifiedCompany
+        company == expectedCompany
     }
 
-    def "should get status 404 when company id is not found when getting company by id"() {
+    def "404 is returned when company id is not found when getting by id [#id]"() {
         given:
         addUniqueCompanies(11)
 
         expect:
-        mockMvc.perform(
-                get("$COMPANIES_ENDPOINT/$id")
-        )
+        mockMvc.perform(get("$COMPANIES_ENDPOINT/$id"))
                 .andExpect(status().isNotFound())
 
         where:
         id << [-100, -2, -1, 0, 168, 1256]
     }
 
-    def "should get status 404 when company id is not found when deleting company by id"() {
+    def "404 is returned when company id is not found when deleting company [#id]"() {
         given:
         addUniqueCompanies(11)
 
@@ -103,12 +79,11 @@ class CompanyControllerIntegrationTest extends AbstractControllerTest {
         )
                 .andExpect(status().isNotFound())
 
-
         where:
-        id << [-100, -2, -1, 0, 12, 13, 99, 102, 1000]
+        id << [-100, -2, -1, 0, 1000]
     }
 
-    def "should get status 404 when company id is not found when updating company by id"() {
+    def "404 is returned when company id is not found when updating company [#id]"() {
         given:
         addUniqueCompanies(11)
 
@@ -120,35 +95,35 @@ class CompanyControllerIntegrationTest extends AbstractControllerTest {
         )
                 .andExpect(status().isNotFound())
 
-
         where:
-        id << [-100, -2, -1, 0, 12, 13, 99, 102, 1000]
+        id << [-100, -2, -1, 0, 1000]
     }
 
-    def "should update company by id"() {
+    def "should company can be modified"() {
         given:
-        def id = add(firstCompany, COMPANIES_ENDPOINT)
-        def updatedCompany = secondCompany
-        when:
+        def id = addCompanyAndReturnId(company(4))
+        def updatedCompany = company(1)
+        updatedCompany.id = id
+
+        expect:
         mockMvc.perform(
                 put("$COMPANIES_ENDPOINT/$id")
-                        .content(getAsJson(updatedCompany))
+                        .content(jsonService.toJson(updatedCompany))
                         .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())
 
-        then:
-        secondCompany.setId(id)
-        getById(id, COMPANIES_ENDPOINT, Company.class) == secondCompany
-
+        def companyFromDbAfterUpdate = getCompanyById(id).toString()
+        def expectedCompany = updatedCompany.toString()
+        companyFromDbAfterUpdate == expectedCompany
     }
 
-    def "should delete company by id"() {
+    def "company can be deleted"() {
         given:
         def companies = addUniqueCompanies(69)
 
         expect:
-        companies.each { company -> delete(company.getId(), COMPANIES_ENDPOINT) }
+        companies.each { company -> deleteCompany(company.getId()) }
         getAllCompanies().size() == 0
     }
 
