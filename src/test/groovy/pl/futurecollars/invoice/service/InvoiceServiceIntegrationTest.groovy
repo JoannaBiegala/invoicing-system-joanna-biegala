@@ -3,6 +3,7 @@ package pl.futurecollars.invoice.service
 import pl.futurecollars.invoice.db.Database
 import pl.futurecollars.invoice.db.memory.MemoryRepository
 import pl.futurecollars.invoice.model.Invoice
+import pl.futurecollars.invoice.service.invoice.InvoiceService
 import spock.lang.Specification
 
 import static pl.futurecollars.invoice.TestHelpers.invoice

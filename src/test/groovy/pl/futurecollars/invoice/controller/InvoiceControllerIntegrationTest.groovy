@@ -1,21 +1,34 @@
 package pl.futurecollars.invoice.controller
 
+import com.mongodb.client.MongoDatabase
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.ApplicationContext
 import org.springframework.http.MediaType
+import spock.lang.Requires
+import spock.lang.Stepwise
 import spock.lang.Unroll
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import static pl.futurecollars.invoice.TestHelpers.firstInvoice
-import static pl.futurecollars.invoice.TestHelpers.invoice
-import static pl.futurecollars.invoice.TestHelpers.secondInvoice
-import static pl.futurecollars.invoice.TestHelpers.thirdInvoice
+import static pl.futurecollars.invoice.TestHelpers.*
 
 @AutoConfigureMockMvc
 @SpringBootTest
 @Unroll
+@Stepwise
 class InvoiceControllerIntegrationTest extends AbstractControllerTest {
+
+    @Autowired
+    private ApplicationContext context
+
+    @Requires({ System.getProperty('spring.profiles.active', '').contains('mongo') })
+    def "database is dropped to ensure clean state"() {
+        expect:
+        MongoDatabase mongoDatabase = context.getBean(MongoDatabase)
+        mongoDatabase.drop()
+    }
 
     def "should return empty array when database is empty"() {
         expect:
@@ -63,7 +76,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
         expect:
         mockMvc.perform(
-                get("$INVOICES_ENDPOINT$id")
+                get("$INVOICES_ENDPOINT/$id")
         )
                 .andExpect(status().isNotFound())
 
@@ -77,7 +90,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
         expect:
         mockMvc.perform(
-                delete("$INVOICES_ENDPOINT$id")
+                delete("$INVOICES_ENDPOINT/$id")
         )
                 .andExpect(status().isNotFound())
 
@@ -92,7 +105,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
         expect:
         mockMvc.perform(
-                put("$INVOICES_ENDPOINT$id")
+                put("$INVOICES_ENDPOINT/$id")
                         .content(getInvoiceAsJson(invoice(1)))
                         .contentType(MediaType.APPLICATION_JSON)
         )
@@ -106,11 +119,11 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
     def "should update invoice by id"() {
         given:
         def id = addInvoice(firstInvoice)
-
+        def updatedInvoice = secondInvoice
         when:
         mockMvc.perform(
-                put("$INVOICES_ENDPOINT$id")
-                        .content(getInvoiceAsJson(secondInvoice))
+                put("$INVOICES_ENDPOINT/$id")
+                        .content(getInvoiceAsJson(updatedInvoice))
                         .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())
@@ -118,6 +131,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         then:
         secondInvoice.setId(id)
         getInvoiceById(id) == secondInvoice
+
     }
 
     def "should delete invoice by id"() {

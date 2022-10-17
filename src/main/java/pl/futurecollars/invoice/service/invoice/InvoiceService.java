@@ -1,4 +1,4 @@
-package pl.futurecollars.invoice.service;
+package pl.futurecollars.invoice.service.invoice;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,9 +9,9 @@ import pl.futurecollars.invoice.model.Invoice;
 @Service
 public class InvoiceService {
 
-  private final Database database;
+  private final Database<Invoice> database;
 
-  public InvoiceService(Database database) {
+  public InvoiceService(Database<Invoice> database) {
     this.database = database;
   }
 
@@ -24,21 +24,19 @@ public class InvoiceService {
   }
 
   public boolean updateInvoice(long id, Invoice invoice) {
-    if (database.findById(id).isPresent()) {
+    var invoiceToUpdate = database.findById(id);
+    if (invoiceToUpdate.isPresent()) {
       database.update(id, invoice);
-      return true;
-    } else {
-      return false;
     }
+    return invoiceToUpdate.isPresent();
   }
 
   public boolean deleteInvoice(long id) {
-    if (database.findById(id).isPresent()) {
+    var invoiceToDelete = database.findById(id);
+    if (invoiceToDelete.isPresent()) {
       database.delete(id);
-      return true;
-    } else {
-      return false;
     }
+    return invoiceToDelete.isPresent();
   }
 
   public List<Invoice> getAll() {

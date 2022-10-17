@@ -3,26 +3,22 @@ package pl.futurecollars.invoice.controller
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import pl.futurecollars.invoice.model.Company
 import pl.futurecollars.invoice.model.Invoice
-import pl.futurecollars.invoice.service.TaxCalculatorResult
+import pl.futurecollars.invoice.service.tax.TaxCalculatorResult
 import pl.futurecollars.invoice.utils.JsonService
 import spock.lang.Specification
 
 import java.nio.file.Files
 import java.nio.file.Path
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static pl.futurecollars.invoice.TestHelpers.invoice
+import static pl.futurecollars.invoice.TestHelpers.INVOICES_ENDPOINT
+import static pl.futurecollars.invoice.TestHelpers.TAX_ENDPOINT
 
 class AbstractControllerTest extends Specification {
-
-    static final String INVOICES_ENDPOINT = "/invoices/"
-    private static final String TAX_ENDPOINT = "/tax/"
 
     @Autowired
     MockMvc mockMvc
@@ -50,12 +46,12 @@ class AbstractControllerTest extends Specification {
 
     void deleteInvoice(long id) {
         mockMvc.perform(
-                delete("$INVOICES_ENDPOINT$id"))
+                delete("$INVOICES_ENDPOINT/$id"))
                 .andExpect(status().isOk())
     }
 
     Invoice getInvoiceById(long id) {
-        def invoiceAsString = mockMvc.perform(get("$INVOICES_ENDPOINT$id"))
+        def invoiceAsString = mockMvc.perform(get("$INVOICES_ENDPOINT/$id"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
