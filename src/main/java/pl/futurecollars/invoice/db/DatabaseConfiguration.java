@@ -48,13 +48,6 @@ public class DatabaseConfiguration {
   }
 
   @Bean
-  @ConditionalOnProperty(value = "database.type", havingValue = "sql")
-  public Database sqlDatabase(JdbcTemplate jdbcTemplate) {
-    log.info("Running on sql database");
-    return new SqlDatabase(jdbcTemplate);
-  }
-
-  @Bean
   @ConditionalOnProperty(value = "database.type", havingValue = "in-file")
   public IdService idService(
       FilesService filesService,
