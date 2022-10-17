@@ -6,6 +6,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.ApplicationContext
 import org.springframework.http.MediaType
+import pl.futurecollars.invoice.model.Invoice
 import spock.lang.Requires
 import spock.lang.Stepwise
 import spock.lang.Unroll
@@ -30,26 +31,30 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         mongoDatabase.drop()
     }
 
-    def "should return empty array when database is empty"() {
+    def setup() {
+        getAllInvoices().each { invoice -> delete(invoice.id, INVOICES_ENDPOINT) }
+    }
+
+    def "should return empty array when invoice database is empty"() {
         expect:
         getAllInvoices() == []
     }
 
     def "should add invoice and return sequential id"() {
         expect:
-        def id = addInvoice(firstInvoice)
-        addInvoice(firstInvoice) == id + 1
-        addInvoice(firstInvoice) == id + 2
-        addInvoice(firstInvoice) == id + 3
-        addInvoice(firstInvoice) == id + 4
+        def id = add(firstInvoice, INVOICES_ENDPOINT)
+        add(firstInvoice, INVOICES_ENDPOINT) == id + 1
+        add(firstInvoice, INVOICES_ENDPOINT) == id + 2
+        add(firstInvoice, INVOICES_ENDPOINT) == id + 3
+        add(firstInvoice, INVOICES_ENDPOINT) == id + 4
     }
 
     def "should return all invoices"() {
         given:
         def numberOfInvoices = 3
-        addInvoice(firstInvoice)
-        addInvoice(secondInvoice)
-        addInvoice(thirdInvoice)
+        add(firstInvoice, INVOICES_ENDPOINT)
+        add(secondInvoice, INVOICES_ENDPOINT)
+        add(thirdInvoice, INVOICES_ENDPOINT)
 
         when:
         def invoices = getAllInvoices()
@@ -64,7 +69,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         def verifiedInvoice = expectedInvoices.get(2)
 
         when:
-        def invoice = getInvoiceById(verifiedInvoice.getId())
+        def invoice = getById(verifiedInvoice.getId(),INVOICES_ENDPOINT, Invoice.class)
 
         then:
         invoice == verifiedInvoice
@@ -106,7 +111,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         expect:
         mockMvc.perform(
                 put("$INVOICES_ENDPOINT/$id")
-                        .content(getInvoiceAsJson(invoice(1)))
+                        .content(getAsJson(invoice(1)))
                         .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isNotFound())
@@ -118,19 +123,19 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
     def "should update invoice by id"() {
         given:
-        def id = addInvoice(firstInvoice)
+        def id = add(firstInvoice, INVOICES_ENDPOINT)
         def updatedInvoice = secondInvoice
         when:
         mockMvc.perform(
                 put("$INVOICES_ENDPOINT/$id")
-                        .content(getInvoiceAsJson(updatedInvoice))
+                        .content(getAsJson(updatedInvoice))
                         .contentType(MediaType.APPLICATION_JSON)
         )
                 .andExpect(status().isOk())
 
         then:
         secondInvoice.setId(id)
-        getInvoiceById(id) == secondInvoice
+        getById(id,INVOICES_ENDPOINT,Invoice.class) == secondInvoice
 
     }
 
@@ -139,7 +144,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         def invoices = addUniqueInvoices(69)
 
         expect:
-        invoices.each { invoice -> deleteInvoice(invoice.getId()) }
+        invoices.each { invoice -> delete(invoice.getId(),INVOICES_ENDPOINT) }
         getAllInvoices().size() == 0
     }
 

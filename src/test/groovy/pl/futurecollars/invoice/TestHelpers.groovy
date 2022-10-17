@@ -7,6 +7,7 @@ import java.time.LocalDate
 class TestHelpers {
 
     static final String INVOICES_ENDPOINT = "/invoices"
+    static final String COMPANIES_ENDPOINT = "/companies"
     static final String TAX_ENDPOINT = "/tax"
 
     static company(long id) {
@@ -51,6 +52,14 @@ class TestHelpers {
             .name("Second")
             .taxIdentificationNumber("2222222222")
             .address("ul. Druga 2, Warszawa, Polska")
+            .healthInsurance(BigDecimal.valueOf(500).setScale(2))
+            .pensionInsurance(BigDecimal.valueOf(1400).setScale(2))
+            .build()
+
+    static Company thirdCompany = Company.builder()
+            .name("Third")
+            .taxIdentificationNumber("3333333333")
+            .address("ul. Trzecia 3, Warszawa, Polska")
             .healthInsurance(BigDecimal.valueOf(500).setScale(2))
             .pensionInsurance(BigDecimal.valueOf(1400).setScale(2))
             .build()

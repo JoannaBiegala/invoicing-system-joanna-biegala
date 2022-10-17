@@ -10,12 +10,12 @@ import pl.futurecollars.invoice.model.Invoice;
 @Slf4j
 @Configuration
 @ConditionalOnProperty(value = "database.type", havingValue = "memory")
-public class MemoryRepositoryConfiguration {
+public class MemoryDatabaseConfiguration {
 
   @Bean
   public Database<Invoice> memoryRepository() {
     log.info("Running on memory database");
-    return new MemoryRepository<>();
+    return new MemoryDatabase<>();
   }
 
 }

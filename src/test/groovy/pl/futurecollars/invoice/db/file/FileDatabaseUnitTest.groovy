@@ -12,7 +12,7 @@ import java.nio.file.Path
 
 import static pl.futurecollars.invoice.TestHelpers.invoice
 
-class FileRepositoryUnitTest extends Specification {
+class FileDatabaseUnitTest extends Specification {
 
     private final databasePath = Path.of("test_db/invoices.json")
     private final FilesService filesServiceMock = Mock(FilesService)
@@ -22,7 +22,7 @@ class FileRepositoryUnitTest extends Specification {
     private Database database
 
     def setup() {
-        database = new FileRepository(databasePath, filesServiceMock, jsonServiceMock, idService, Invoice.class)
+        database = new FileDatabase(databasePath, filesServiceMock, jsonServiceMock, idService, Invoice.class)
     }
 
     def "should throw exception when appendLineToFile() in save() fails"() {

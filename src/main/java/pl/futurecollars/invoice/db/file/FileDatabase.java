@@ -13,7 +13,7 @@ import pl.futurecollars.invoice.utils.IdService;
 import pl.futurecollars.invoice.utils.JsonService;
 
 @AllArgsConstructor
-public class FileRepository<T extends WithId> implements Database<T> {
+public class FileDatabase<T extends WithId> implements Database<T> {
 
   private final Path databasePath;
   private final FilesService filesService;

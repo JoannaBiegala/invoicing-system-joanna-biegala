@@ -12,7 +12,7 @@ import java.nio.file.Path
 
 import static pl.futurecollars.invoice.TestHelpers.invoice
 
-class FileRepositoryIntegrationTest extends AbstractDatabaseTest {
+class FileDatabaseIntegrationTest extends AbstractDatabaseTest {
 
     Path databasePath
 
@@ -23,7 +23,7 @@ class FileRepositoryIntegrationTest extends AbstractDatabaseTest {
         def idService = new IdService(idPath, filesService)
         def jsonService = new JsonService()
         databasePath = File.createTempFile("testInvoices", ".json").toPath()
-        new FileRepository(databasePath, filesService, jsonService, idService, Invoice.class)
+        new FileDatabase(databasePath, filesService, jsonService, idService, Invoice.class)
     }
 
     def "should file based database writes invoices to correct file"() {

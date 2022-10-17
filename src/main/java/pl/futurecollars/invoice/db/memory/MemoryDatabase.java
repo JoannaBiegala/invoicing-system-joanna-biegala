@@ -8,7 +8,7 @@ import java.util.Optional;
 import pl.futurecollars.invoice.db.Database;
 import pl.futurecollars.invoice.model.WithId;
 
-public class MemoryRepository<T extends WithId> implements Database<T> {
+public class MemoryDatabase<T extends WithId> implements Database<T> {
 
   private long index = 1;
   private final Map<Long, T> items = new HashMap<>();

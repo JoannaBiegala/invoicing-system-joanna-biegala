@@ -16,7 +16,7 @@ import pl.futurecollars.invoice.utils.JsonService;
 @Slf4j
 @Configuration
 @ConditionalOnProperty(value = "database.type", havingValue = "file")
-public class FileRepositoryConfiguration {
+public class FileDatabaseConfiguration {
 
   @Bean
   public FilesService filesService() {
@@ -48,7 +48,7 @@ public class FileRepositoryConfiguration {
     log.debug(dbPath);
 
     Path databasePath = filesService.createFile(dbPath);
-    return new FileRepository<>(databasePath, filesService, jsonService, idService, Invoice.class);
+    return new FileDatabase<>(databasePath, filesService, jsonService, idService, Invoice.class);
   }
 
 }

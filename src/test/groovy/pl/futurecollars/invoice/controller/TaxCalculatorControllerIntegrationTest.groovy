@@ -4,11 +4,17 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import pl.futurecollars.invoice.TestHelpers
 
+import static pl.futurecollars.invoice.TestHelpers.TAX_ENDPOINT
 import static pl.futurecollars.invoice.TestHelpers.firstCompany
+import static pl.futurecollars.invoice.TestHelpers.getINVOICES_ENDPOINT
 
 @AutoConfigureMockMvc
 @SpringBootTest
 class TaxCalculatorControllerIntegrationTest extends AbstractControllerTest {
+
+    def setup() {
+        getAllInvoices().each { invoice -> delete(invoice.id, INVOICES_ENDPOINT) }
+    }
 
     def "should return response with correct values when there are no invoices in database"() {
 
@@ -36,7 +42,7 @@ class TaxCalculatorControllerIntegrationTest extends AbstractControllerTest {
 
     def "should return response with correct values when there is invoice in database"() {
         given:
-        addInvoice(TestHelpers.firstInvoice)
+        add(TestHelpers.firstInvoice, TAX_ENDPOINT)
 
         when:
         def taxCalculatorResponse = getTaxCalculatorResult(firstCompany)
@@ -61,9 +67,9 @@ class TaxCalculatorControllerIntegrationTest extends AbstractControllerTest {
 
     def "should return response with correct values when there are invoices in database"() {
         given:
-        addInvoice(TestHelpers.firstInvoice)
-        addInvoice(TestHelpers.secondInvoice)
-        addInvoice(TestHelpers.thirdInvoice)
+        add(TestHelpers.firstInvoice, TAX_ENDPOINT)
+        add(TestHelpers.secondInvoice, TAX_ENDPOINT)
+        add(TestHelpers.thirdInvoice, TAX_ENDPOINT)
 
         when:
         def taxCalculatorResponse = getTaxCalculatorResult(firstCompany)
@@ -88,7 +94,7 @@ class TaxCalculatorControllerIntegrationTest extends AbstractControllerTest {
 
     def "should return response with correct values when there are invoice with payment for car, which is used also for personal reasons"() {
         given:
-        addInvoice(TestHelpers.fourthInvoice)
+        add(TestHelpers.fourthInvoice, TAX_ENDPOINT)
 
         when:
         def taxCalculatorResponse = getTaxCalculatorResult(firstCompany)
@@ -113,7 +119,7 @@ class TaxCalculatorControllerIntegrationTest extends AbstractControllerTest {
 
     def "should return response with correct values when there are invoice with payment for car, which is used for business purposes only"() {
         given:
-        addInvoice(TestHelpers.fifthInvoice)
+        add(TestHelpers.fifthInvoice, TAX_ENDPOINT)
 
         when:
         def taxCalculatorResponse = getTaxCalculatorResult(firstCompany)

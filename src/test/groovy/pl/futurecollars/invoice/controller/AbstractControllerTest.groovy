@@ -14,6 +14,8 @@ import java.nio.file.Path
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import static pl.futurecollars.invoice.TestHelpers.COMPANIES_ENDPOINT
+import static pl.futurecollars.invoice.TestHelpers.company
 import static pl.futurecollars.invoice.TestHelpers.invoice
 import static pl.futurecollars.invoice.TestHelpers.INVOICES_ENDPOINT
 import static pl.futurecollars.invoice.TestHelpers.TAX_ENDPOINT
@@ -27,14 +29,14 @@ class AbstractControllerTest extends Specification {
     JsonService jsonService
 
     def setup() {
-        getAllInvoices().each { invoice -> deleteInvoice(invoice.id) }
+        getAllInvoices().each { invoice -> delete(invoice.id, INVOICES_ENDPOINT) }
     }
 
-    long addInvoice(Invoice invoice) {
+    long add(Object object, String endpoint) {
         Long.valueOf(
                 mockMvc.perform(
-                        post(INVOICES_ENDPOINT)
-                                .content(getInvoiceAsJson(invoice))
+                        post(endpoint)
+                                .content(getAsJson(object))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                         .andExpect(status().isOk())
@@ -44,20 +46,20 @@ class AbstractControllerTest extends Specification {
         )
     }
 
-    void deleteInvoice(long id) {
+    void delete(long id, String endpoint) {
         mockMvc.perform(
-                delete("$INVOICES_ENDPOINT/$id"))
+                delete("$endpoint/$id"))
                 .andExpect(status().isOk())
     }
 
-    Invoice getInvoiceById(long id) {
-        def invoiceAsString = mockMvc.perform(get("$INVOICES_ENDPOINT/$id"))
+    Object getById(long id, String endpoint, Class clazz) {
+        def objectAsString = mockMvc.perform(get("$endpoint/$id"))
                 .andExpect(status().isOk())
                 .andReturn()
                 .response
                 .contentAsString
 
-        return getInvoiceAsObject(invoiceAsString)
+        return getAsObject(objectAsString, clazz)
     }
 
     List<Invoice> getAllInvoices() {
@@ -70,11 +72,29 @@ class AbstractControllerTest extends Specification {
         return jsonService.toObject(response, Invoice[])
     }
 
+    List<Company> getAllCompanies() {
+        def response = mockMvc.perform(get(COMPANIES_ENDPOINT))
+                .andExpect(status().isOk())
+                .andReturn()
+                .response
+                .contentAsString
+
+        return jsonService.toObject(response, Company[])
+    }
+
     List<Invoice> addUniqueInvoices(int count) {
         (1..count).collect { id ->
             def invoice = invoice(id)
-            invoice.id = addInvoice(invoice)
+            invoice.id = add(invoice, INVOICES_ENDPOINT)
             return invoice
+        }
+    }
+
+    List<Company> addUniqueCompanies(int count) {
+        (1..count).collect { id ->
+            def company = company(id)
+            company.id = add(company, COMPANIES_ENDPOINT)
+            return company
         }
     }
 
@@ -82,7 +102,7 @@ class AbstractControllerTest extends Specification {
     TaxCalculatorResult getTaxCalculatorResult(Company company) {
         def response =
                 mockMvc.perform(
-                        post(TAX_ENDPOINT).content(getCompanyAsJson(company))
+                        post(TAX_ENDPOINT).content(getAsJson(company))
                                 .contentType(MediaType.APPLICATION_JSON)
                 )
                         .andExpect(status().isOk())
@@ -93,16 +113,12 @@ class AbstractControllerTest extends Specification {
         jsonService.toObject(response, TaxCalculatorResult)
     }
 
-    def getInvoiceAsJson(Invoice invoice) {
-        jsonService.toJson(invoice)
+    def getAsJson(Object object) {
+        jsonService.toJson(object)
     }
 
-    def getInvoiceAsObject(String invoiceAsJson) {
-        jsonService.toObject(invoiceAsJson, Invoice)
-    }
-
-    def getCompanyAsJson(Company company) {
-        jsonService.toJson(company)
+    def getAsObject(String objectAsJson, Class clazz) {
+        jsonService.toObject(objectAsJson, clazz)
     }
 
     def setupSpec() {
