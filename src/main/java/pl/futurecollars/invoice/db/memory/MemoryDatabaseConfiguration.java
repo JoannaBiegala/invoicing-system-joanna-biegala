@@ -4,7 +4,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import pl.futurecollars.invoice.db.Database;
 import pl.futurecollars.invoice.model.Company;
 import pl.futurecollars.invoice.model.Invoice;
@@ -20,7 +19,6 @@ public class MemoryDatabaseConfiguration {
     return new MemoryDatabase<>();
   }
 
-  @Primary
   @Bean
   public Database<Company> companyMemoryDatabase() {
     log.info("Running on company database");

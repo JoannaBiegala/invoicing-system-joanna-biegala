@@ -92,8 +92,6 @@ class IdServiceTest extends Specification {
 
     def deleteTestFile(Path path) {
         Files.deleteIfExists(path)
-        Files.deleteIfExists(path.getParent())
-
     }
 
     def cleanup() {

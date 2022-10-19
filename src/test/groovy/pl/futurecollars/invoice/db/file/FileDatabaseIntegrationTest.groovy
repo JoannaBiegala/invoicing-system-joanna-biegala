@@ -23,7 +23,7 @@ class FileDatabaseIntegrationTest extends AbstractDatabaseTest {
         def idService = new IdService(idPath, filesService)
         def jsonService = new JsonService()
         databasePath = File.createTempFile("testInvoices", ".json").toPath()
-        new FileDatabase(databasePath, filesService, jsonService, idService, Invoice.class)
+        new FileDatabase<>(databasePath, filesService, jsonService, idService, Invoice.class)
     }
 
     def "should file based database writes invoices to correct file"() {
