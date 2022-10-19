@@ -5,14 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationContext
 import org.springframework.http.MediaType
 import pl.futurecollars.invoice.controller.AbstractControllerTest
+import pl.futurecollars.invoice.model.Invoice
 import spock.lang.Requires
-import spock.lang.Unroll
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static pl.futurecollars.invoice.TestHelpers.*
 
-@Unroll
 class InvoiceControllerIntegrationTest extends AbstractControllerTest {
 
     @Autowired
@@ -60,7 +59,9 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         def verifiedInvoice = expectedInvoices.get(2)
 
         when:
-        def invoice = getInvoiceById(verifiedInvoice.getId())
+        Invoice invoice = getById(verifiedInvoice.getId(), Invoice, INVOICES_ENDPOINT)
+        verifiedInvoice.seller.setId(invoice.seller.getId())
+        verifiedInvoice.buyer.setId(invoice.buyer.getId())
 
         then:
         resetIds(invoice) == resetIds(verifiedInvoice)

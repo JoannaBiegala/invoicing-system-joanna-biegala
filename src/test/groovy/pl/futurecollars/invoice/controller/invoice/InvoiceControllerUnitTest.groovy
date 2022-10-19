@@ -14,6 +14,7 @@ import pl.futurecollars.invoice.model.Invoice
 import pl.futurecollars.invoice.utils.JsonService
 import spock.lang.Specification
 import spock.lang.Stepwise
+
 import java.nio.file.Files
 import java.nio.file.Path
 import java.time.LocalDate
@@ -153,15 +154,16 @@ class InvoiceControllerUnitTest extends Specification {
                         .contentType(MediaType.APPLICATION_JSON)
         )
 
-        invoiceToUpdate.setId(Long.valueOf(id))
         def responseFindById = mockMvc.perform(MockMvcRequestBuilders.get("$INVOICES_ENDPOINT/$id"))
+        def invoiceFromResponse = jsonService.toObject(responseFindById.andReturn().getResponse().contentAsString, Invoice.class)
 
+        invoiceToUpdate.setId(Long.valueOf(id))
+        invoiceToUpdate.seller.setId(invoiceFromResponse.seller.getId())
+        invoiceToUpdate.buyer.setId(invoiceFromResponse.buyer.getId())
 
         then:
         responseUpdate.andExpect(MockMvcResultMatchers.status().isOk())
-        def responseInvoice = jsonService.toObject(responseFindById.andReturn().getResponse().contentAsString, Invoice.class)
-        resetIds(responseInvoice) == invoiceToUpdate
-
+        invoiceFromResponse == invoiceToUpdate
     }
 
     def "should delete invoice"() {

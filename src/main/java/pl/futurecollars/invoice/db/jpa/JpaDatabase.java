@@ -26,7 +26,7 @@ public class JpaDatabase<T extends WithId> implements Database<T> {
 
   @Override
   public Optional<T> update(long id, T updatedItem) {
-    Optional<T> itemOptional = findById(id);
+    Optional<T> itemOptional = repository.findById(id);
     if (itemOptional.isPresent()) {
       updatedItem.setId(id);
       repository.save(updatedItem);

@@ -1,14 +1,15 @@
 package pl.futurecollars.invoice.controller.company
 
 import org.springframework.http.MediaType
+import org.springframework.transaction.annotation.Transactional
 import pl.futurecollars.invoice.controller.AbstractControllerTest
-import spock.lang.Unroll
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import static pl.futurecollars.invoice.TestHelpers.COMPANIES_ENDPOINT
 import static pl.futurecollars.invoice.TestHelpers.company
 
-@Unroll
+@Transactional
 class CompanyControllerIntegrationTest extends AbstractControllerTest {
 
 

@@ -107,10 +107,6 @@ checkstyle {
     maxErrors = 0
 }
 
-//tasks.named('test') {
-//    useJUnitPlatform()
-//}
-
 task testWithFileDatabase(type: Test) {
     systemProperty 'spring.profiles.active', 'file'
     useJUnitPlatform()

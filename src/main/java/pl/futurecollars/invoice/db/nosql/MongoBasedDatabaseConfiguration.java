@@ -49,7 +49,7 @@ public class MongoBasedDatabaseConfiguration {
   public Database<Invoice> mongoBasedInvoiceDatabase(@Value("${database.invoice.collection}") String collectionName,
                                                      MongoDatabase mongoDatabase,
                                                      MongoIdProvider mongoIdProvider) {
-    log.info("Running invoices on nosql Mongo database");
+    log.info("Running on nosql Mongo database");
     return new MongoBasedDatabase<>(mongoDatabase.getCollection(collectionName, Invoice.class), mongoIdProvider);
   }
 
@@ -57,7 +57,6 @@ public class MongoBasedDatabaseConfiguration {
   public Database<Company> mongoBasedCompanyDatabase(@Value("${database.company.collection}") String collectionName,
                                                      MongoDatabase mongoDatabase,
                                                      MongoIdProvider mongoIdProvider) {
-    log.info("Running companies on nosql Mongo database");
     return new MongoBasedDatabase<>(mongoDatabase.getCollection(collectionName, Company.class), mongoIdProvider);
   }
 

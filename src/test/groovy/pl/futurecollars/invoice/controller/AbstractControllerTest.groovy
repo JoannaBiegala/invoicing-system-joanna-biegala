@@ -10,20 +10,18 @@ import pl.futurecollars.invoice.model.Invoice
 import pl.futurecollars.invoice.service.tax.TaxCalculatorResult
 import pl.futurecollars.invoice.utils.JsonService
 import spock.lang.Specification
+import spock.lang.Unroll
 
 import java.nio.file.Files
 import java.nio.file.Path
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
-import static pl.futurecollars.invoice.TestHelpers.COMPANIES_ENDPOINT
-import static pl.futurecollars.invoice.TestHelpers.company
-import static pl.futurecollars.invoice.TestHelpers.invoice
-import static pl.futurecollars.invoice.TestHelpers.INVOICES_ENDPOINT
-import static pl.futurecollars.invoice.TestHelpers.TAX_ENDPOINT
+import static pl.futurecollars.invoice.TestHelpers.*
 
 @AutoConfigureMockMvc
 @SpringBootTest
+@Unroll
 class AbstractControllerTest extends Specification {
 
     @Autowired
@@ -108,13 +106,11 @@ class AbstractControllerTest extends Specification {
 
     def setupSpec() {
         resetFile("test_db/invoices.json")
-        resetFile("test_db/companies.json")
         resetFile("test_db/nextId.txt")
     }
 
     def cleanupSpec() {
         Files.deleteIfExists(Path.of("test_db/invoices.json"))
-        Files.deleteIfExists(Path.of("test_db/companies.json"))
         Files.deleteIfExists(Path.of("test_db/nextId.txt"))
     }
 
@@ -129,7 +125,7 @@ class AbstractControllerTest extends Specification {
         }
     }
 
-    private <T> int addAndReturnId(T item, String endpoint) {
+    protected <T> int addAndReturnId(T item, String endpoint) {
         Integer.valueOf(
                 mockMvc.perform(
                         post(endpoint)
@@ -143,7 +139,7 @@ class AbstractControllerTest extends Specification {
         )
     }
 
-    private <T> T getAll(Class<T> clazz, String endpoint) {
+    protected <T> T getAll(Class<T> clazz, String endpoint) {
         def response = mockMvc.perform(get(endpoint))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -154,7 +150,7 @@ class AbstractControllerTest extends Specification {
     }
 
 
-    private <T> T getById(long id, Class<T> clazz, String endpoint) {
+    protected <T> T getById(long id, Class<T> clazz, String endpoint) {
         def invoiceAsString = mockMvc.perform(get("$endpoint/$id"))
                 .andExpect(status().isOk())
                 .andReturn()
