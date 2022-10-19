@@ -239,4 +239,3 @@ class InvoiceControllerUnitTest extends Specification {
         }
     }
 }
-
