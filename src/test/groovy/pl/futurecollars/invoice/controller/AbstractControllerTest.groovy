@@ -108,11 +108,13 @@ class AbstractControllerTest extends Specification {
 
     def setupSpec() {
         resetFile("test_db/invoices.json")
+        resetFile("test_db/companies.json")
         resetFile("test_db/nextId.txt")
     }
 
     def cleanupSpec() {
         Files.deleteIfExists(Path.of("test_db/invoices.json"))
+        Files.deleteIfExists(Path.of("test_db/companies.json"))
         Files.deleteIfExists(Path.of("test_db/nextId.txt"))
     }
 

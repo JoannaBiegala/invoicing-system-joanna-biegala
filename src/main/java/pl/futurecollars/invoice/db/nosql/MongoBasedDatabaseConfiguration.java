@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import pl.futurecollars.invoice.db.Database;
+import pl.futurecollars.invoice.model.Company;
 import pl.futurecollars.invoice.model.Invoice;
 
 @Slf4j
@@ -45,11 +46,19 @@ public class MongoBasedDatabaseConfiguration {
   }
 
   @Bean
-  public Database<Invoice> mongoBasedDatabase(@Value("${database.collection}") String collectionName,
-                                              MongoDatabase mongoDatabase,
-                                              MongoIdProvider mongoIdProvider) {
-    log.info("Running on nosql Mongo database");
+  public Database<Invoice> mongoBasedInvoiceDatabase(@Value("${database.invoice.collection}") String collectionName,
+                                                     MongoDatabase mongoDatabase,
+                                                     MongoIdProvider mongoIdProvider) {
+    log.info("Running invoices on nosql Mongo database");
     return new MongoBasedDatabase<>(mongoDatabase.getCollection(collectionName, Invoice.class), mongoIdProvider);
+  }
+
+  @Bean
+  public Database<Company> mongoBasedCompanyDatabase(@Value("${database.company.collection}") String collectionName,
+                                                     MongoDatabase mongoDatabase,
+                                                     MongoIdProvider mongoIdProvider) {
+    log.info("Running companies on nosql Mongo database");
+    return new MongoBasedDatabase<>(mongoDatabase.getCollection(collectionName, Company.class), mongoIdProvider);
   }
 
 }
