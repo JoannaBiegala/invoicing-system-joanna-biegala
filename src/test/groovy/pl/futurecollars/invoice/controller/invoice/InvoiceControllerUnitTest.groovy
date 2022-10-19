@@ -159,7 +159,8 @@ class InvoiceControllerUnitTest extends Specification {
 
         then:
         responseUpdate.andExpect(MockMvcResultMatchers.status().isOk())
-        responseFindById.andReturn().getResponse().contentAsString == jsonService.toJson(invoiceToUpdate)
+        def responseInvoice = jsonService.toObject(responseFindById.andReturn().getResponse().contentAsString, Invoice.class)
+        resetIds(responseInvoice) == invoiceToUpdate
 
     }
 

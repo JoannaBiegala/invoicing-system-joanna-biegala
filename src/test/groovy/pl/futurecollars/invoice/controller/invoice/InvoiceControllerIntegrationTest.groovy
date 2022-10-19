@@ -63,7 +63,7 @@ class InvoiceControllerIntegrationTest extends AbstractControllerTest {
         def invoice = getInvoiceById(verifiedInvoice.getId())
 
         then:
-        invoice == verifiedInvoice
+        resetIds(invoice) == resetIds(verifiedInvoice)
     }
 
     def "should get status 404 when invoice id is not found when getting invoice by id"() {

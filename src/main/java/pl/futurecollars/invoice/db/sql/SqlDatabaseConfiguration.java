@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import pl.futurecollars.invoice.db.Database;
+import pl.futurecollars.invoice.model.Company;
 import pl.futurecollars.invoice.model.Invoice;
 
 @Slf4j
@@ -14,9 +15,14 @@ import pl.futurecollars.invoice.model.Invoice;
 public class SqlDatabaseConfiguration {
 
   @Bean
-  public Database<Invoice> sqlDatabase(JdbcTemplate jdbcTemplate) {
+  public Database<Invoice> invoiceSqlDatabase(JdbcTemplate jdbcTemplate) {
     log.info("Running on sql database");
-    return new SqlDatabase(jdbcTemplate);
+    return new InvoiceSqlDatabase(jdbcTemplate);
+  }
+
+  @Bean
+  public Database<Company> companySqlDatabase(JdbcTemplate jdbcTemplate) {
+    return new CompanySqlDatabase(jdbcTemplate);
   }
 
 }

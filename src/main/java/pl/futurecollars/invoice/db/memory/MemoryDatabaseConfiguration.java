@@ -14,7 +14,7 @@ import pl.futurecollars.invoice.model.Invoice;
 public class MemoryDatabaseConfiguration {
 
   @Bean
-    public Database<Invoice> invoiceMemoryDatabase() {
+  public Database<Invoice> invoiceMemoryDatabase() {
     log.info("Running on memory database");
     return new MemoryDatabase<>();
   }
