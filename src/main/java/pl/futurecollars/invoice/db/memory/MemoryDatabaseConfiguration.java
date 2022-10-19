@@ -19,10 +19,12 @@ public class MemoryDatabaseConfiguration {
     log.info("Running on memory database");
     return new MemoryDatabase<>();
   }
+
   @Primary
   @Bean
   public Database<Company> companyMemoryDatabase() {
     log.info("Running on company database");
     return new MemoryDatabase<>();
   }
+
 }
