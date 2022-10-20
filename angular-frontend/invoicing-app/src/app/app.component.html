@@ -1,0 +1,16 @@
+<table id="companies table" class="table table-striped">
+  <tr>
+    <th>Tax identification number</th>
+    <th>Address</th>
+    <th>Name</th>
+    <th>Pension insurance</th>
+    <th>Health insurance</th>
+  </tr>
+  <tr *ngFor="let company of companies">
+    <td>{{ company.taxIdentificationNumber}}</td>
+    <td>{{ company.address}}</td>
+    <td>{{ company.Name}}</td>
+    <td>{{ company.pensionInsurance}}</td>
+    <td>{{ company.healthInsurance}}</td>
+  </tr>
+</table>
