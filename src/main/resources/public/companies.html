@@ -6,45 +6,34 @@
 
     <link rel="stylesheet" href="companies.css">
 
-    <script>
-        const getAllCompanies = async () => {
-            const response = await fetch('http://localhost:8081/companies');
-            const companies = await response.json();
-
-            const companyTable = document.getElementById('company-table');
-
-            companies.forEach(company => {
-                const row = companyTable.insertRow(-1);
-
-                const taxIdCell = row.insertCell(0);
-                taxIdCell.innerText = company.taxIdentificationNumber;
-
-                const addressCell = row.insertCell(1);
-                addressCell.innerText = company.address;
-
-                const nameCell = row.insertCell(2);
-                nameCell.innerText = company.name;
-
-                const pensionInsuranceCell = row.insertCell(3);
-                pensionInsuranceCell.innerText = company.pensionInsurance;
-
-                const healthInsuranceCell = row.insertCell(4);
-                healthInsuranceCell.innerText = company.healthInsurance;
-            })
-
-
-        }
-
-        getAllCompanies();
-
-    </script>
+    <script src="companies.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+            integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+            crossorigin="anonymous"></script>
 
 </head>
 <body>
+    Add new company:
+    <br>
+    <br>
+        <form id="addCompanyForm" action="http://localhost:8081/companies" method="post">
+            <label for="taxId">Tax Identification Number:</label><br>
+            <input type="text" id="taxId" name="taxIdentificationNumber"><br>
+            <label for="name">Name:</label><br>
+            <input type="text" id="name" name="name"><br>
+            <label for="address">Address:</label><br>
+            <input type="text" id="address" name="address"><br>
+            <label for="pensionInsurance">Pension Insurance:</label><br>
+            <input type="number" id="pensionInsurance" name="pensionInsurance"><br>
+            <label for="healthInsurance">Health Insurance:</label><br>
+            <input type="text" id="healthInsurance" name="healthInsurance"><br><br>
+            <input type="submit">
+        </form>
+    <br>
+    <br>
     Companies:
     <br>
-    <br>
-        <table id='company-table'>
+        <table id="companiesTable">
             <tr>
                 <th>Tax Identification Number</th>
                 <th>Address</th>

@@ -10,30 +10,30 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import pl.futurecollars.invoice.model.Invoice;
 
+@RequestMapping(value = "/invoices", produces = {"application/json;charset=UTF-8"})
 @Api(tags = {"invoice-controller"})
 public interface InvoiceApi {
 
-  String INVOICES_ENDPOINT = "/invoices";
-
   @ApiOperation(value = "Get invoice with given id")
-  @GetMapping(value = INVOICES_ENDPOINT + "/{id}", produces = {"application/json;charset=UTF-8"})
+  @GetMapping(value = "/{id}")
   ResponseEntity<Invoice> getInvoice(@PathVariable long id);
 
   @ApiOperation(value = "Get list of all invoices")
-  @GetMapping(value = INVOICES_ENDPOINT, produces = {"application/json;charset=UTF-8"})
+  @GetMapping
   List<Invoice> getAll();
 
   @ApiOperation(value = "Add new invoice to system")
-  @PostMapping(INVOICES_ENDPOINT)
+  @PostMapping
   long saveInvoice(@RequestBody Invoice invoice);
 
   @ApiOperation(value = "Delete invoice with given id")
-  @DeleteMapping(INVOICES_ENDPOINT + "/{id}")
+  @DeleteMapping(value = "/{id}")
   ResponseEntity<?> deleteInvoice(@PathVariable long id);
 
   @ApiOperation(value = "Update invoice with given id")
-  @PutMapping(INVOICES_ENDPOINT + "/{id}")
+  @PutMapping(value = "/{id}")
   ResponseEntity<?> updateInvoice(@RequestBody Invoice invoice, @PathVariable long id);
 }
