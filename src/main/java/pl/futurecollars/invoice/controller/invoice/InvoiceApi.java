@@ -15,23 +15,25 @@ import pl.futurecollars.invoice.model.Invoice;
 @Api(tags = {"invoice-controller"})
 public interface InvoiceApi {
 
+  String INVOICES_ENDPOINT = "/invoices";
+
   @ApiOperation(value = "Get invoice with given id")
-  @GetMapping(value = "/invoices/{id}", produces = {"application/json;charset=UTF-8"})
+  @GetMapping(value = INVOICES_ENDPOINT + "/{id}", produces = {"application/json;charset=UTF-8"})
   ResponseEntity<Invoice> getInvoice(@PathVariable long id);
 
   @ApiOperation(value = "Get list of all invoices")
-  @GetMapping(value = "/invoices", produces = {"application/json;charset=UTF-8"})
+  @GetMapping(value = INVOICES_ENDPOINT, produces = {"application/json;charset=UTF-8"})
   List<Invoice> getAll();
 
   @ApiOperation(value = "Add new invoice to system")
-  @PostMapping("/invoices")
+  @PostMapping(INVOICES_ENDPOINT)
   long saveInvoice(@RequestBody Invoice invoice);
 
   @ApiOperation(value = "Delete invoice with given id")
-  @DeleteMapping("/invoices/{id}")
+  @DeleteMapping(INVOICES_ENDPOINT + "/{id}")
   ResponseEntity<?> deleteInvoice(@PathVariable long id);
 
   @ApiOperation(value = "Update invoice with given id")
-  @PutMapping("/invoices/{id}")
+  @PutMapping(INVOICES_ENDPOINT + "/{id}")
   ResponseEntity<?> updateInvoice(@RequestBody Invoice invoice, @PathVariable long id);
 }
