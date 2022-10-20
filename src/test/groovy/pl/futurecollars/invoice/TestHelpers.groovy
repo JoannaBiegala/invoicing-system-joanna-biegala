@@ -1,58 +1,158 @@
 package pl.futurecollars.invoice
 
-import pl.futurecollars.invoice.model.Car
-import pl.futurecollars.invoice.model.Company
-import pl.futurecollars.invoice.model.Invoice
-import pl.futurecollars.invoice.model.InvoiceEntry
-import pl.futurecollars.invoice.model.Vat
+import pl.futurecollars.invoice.model.*
 
 import java.time.LocalDate
+import java.util.function.Supplier
 
 class TestHelpers {
 
+    static final String INVOICES_ENDPOINT = "/invoices"
+    static final String COMPANIES_ENDPOINT = "/companies"
+    static final String TAX_ENDPOINT = "/tax"
+
     static company(long id) {
-        new Company(("iCode Trust $id Sp. z o.o"),
-                ("$id").repeat(10),
-                "ul. Nowa 24d/$id 02-703 Warszawa, Polska",
-                BigDecimal.valueOf(500),
-                BigDecimal.valueOf(1400))
+        Company.builder()
+                .name(("iCode Trust $id Sp. z o.o"))
+                .taxIdentificationNumber(("$id").repeat(10))
+                .address("ul. Nowa 24d/$id 02-703 Warszawa, Polska")
+                .healthInsurance(BigDecimal.valueOf(500).setScale(2))
+                .pensionInsurance(BigDecimal.valueOf(1400).setScale(2))
+                .build()
     }
 
     static product(long id) {
-        new InvoiceEntry("Programming course $id", BigDecimal.ONE, BigDecimal.valueOf(id * 1000), BigDecimal.valueOf(id * 1000 * 0.08), Vat.Vat_8, null)
+        InvoiceEntry.builder()
+                .description("Programming course $id")
+                .quantity(BigDecimal.valueOf(1).setScale(2))
+                .netPrice(BigDecimal.valueOf(id * 1000).setScale(2))
+                .vatValue(BigDecimal.valueOf(id * 1000 * 0.08).setScale(2))
+                .vatRate(Vat.Vat_8)
+                .build()
     }
 
     static invoice(long id) {
-        new Invoice(LocalDate.now(), company(id), company(id), List.of(product(id)))
+        Invoice.builder()
+                .date(LocalDate.now())
+                .number("2022/10/12/0000$id")
+                .seller(company(id))
+                .buyer(company(id + 1))
+                .invoiceEntries(List.of(product(id)))
+                .build()
     }
 
-    static Company firstCompany = new Company("First", "1111111111", "ul. Pierwsza 1, Warszawa, Polska", BigDecimal.valueOf(500), BigDecimal.valueOf(1400))
+    static Supplier<Company> firstCompany = () -> Company.builder()
+            .name("First")
+            .taxIdentificationNumber("1111111111")
+            .address("ul. Pierwsza 1, Warszawa, Polska")
+            .healthInsurance(BigDecimal.valueOf(500).setScale(2))
+            .pensionInsurance(BigDecimal.valueOf(1400).setScale(2))
+            .build()
 
-    static Company secondCompany = new Company("Second", "2222222222", "ul. Druga 2, Warszawa, Polska", BigDecimal.valueOf(500), BigDecimal.valueOf(1400))
+    static Supplier<Company> secondCompany = () -> Company.builder()
+            .name("Second")
+            .taxIdentificationNumber("2222222222")
+            .address("ul. Druga 2, Warszawa, Polska")
+            .healthInsurance(BigDecimal.valueOf(500).setScale(2))
+            .pensionInsurance(BigDecimal.valueOf(1400).setScale(2))
+            .build()
 
+    static Car firstCar = Car.builder()
+            .registrationNumber("AAA 12 34")
+            .personalUse(true)
+            .build()
 
-    static Car firstCar = new Car("AAA 12 34", true)
+    static Car secondCar = Car.builder()
+            .registrationNumber("BBB 12 34")
+            .personalUse(false)
+            .build()
 
-    static Car secondCar = new Car("BBB 12 34", false)
+    static InvoiceEntry firstEntry = InvoiceEntry.builder()
+            .description("First product")
+            .quantity(BigDecimal.valueOf(1).setScale(2))
+            .netPrice(BigDecimal.valueOf(10000).setScale(2))
+            .vatValue(BigDecimal.valueOf(10000 * 0.23).setScale(2))
+            .vatRate(Vat.Vat_23)
+            .build()
 
+    static InvoiceEntry secondEntry = InvoiceEntry.builder()
+            .description("Second product")
+            .quantity(BigDecimal.valueOf(10).setScale(2))
+            .netPrice(BigDecimal.valueOf(5000).setScale(2))
+            .vatValue(BigDecimal.valueOf(5000 * 0.05).setScale(2))
+            .vatRate(Vat.Vat_5)
+            .build()
 
-    static InvoiceEntry firstEntry = new InvoiceEntry("First product", BigDecimal.ONE, BigDecimal.valueOf(10000), BigDecimal.valueOf(10000 * 0.23), Vat.Vat_23, null)
+    static InvoiceEntry thirdEntry = InvoiceEntry.builder()
+            .description("Third product")
+            .quantity(BigDecimal.valueOf(1).setScale(2))
+            .netPrice(BigDecimal.valueOf(10000).setScale(2))
+            .vatValue(BigDecimal.valueOf(10000 * 0.23).setScale(2))
+            .vatRate(Vat.Vat_23)
+            .expenseRelatedToCar(firstCar)
+            .build()
 
-    static InvoiceEntry secondEntry = new InvoiceEntry("Second product", BigDecimal.TEN, BigDecimal.valueOf(5000), BigDecimal.valueOf(5000 * 0.05), Vat.Vat_5, null)
+    static InvoiceEntry fourthEntry = InvoiceEntry.builder()
+            .description("Fourth product")
+            .quantity(BigDecimal.valueOf(1).setScale(2))
+            .netPrice(BigDecimal.valueOf(10000).setScale(2))
+            .vatValue(BigDecimal.valueOf(10000 * 0.23).setScale(2))
+            .vatRate(Vat.Vat_23)
+            .expenseRelatedToCar(secondCar)
+            .build()
 
-    static InvoiceEntry thirdEntry = new InvoiceEntry("Third product", BigDecimal.ONE, BigDecimal.valueOf(10000), BigDecimal.valueOf(10000 * 0.23), Vat.Vat_23, firstCar)
+    static Invoice firstInvoice = Invoice.builder()
+            .date(LocalDate.of(2022, 10, 1))
+            .number("2022/10/12/00001")
+            .seller(firstCompany.get())
+            .buyer(secondCompany.get())
+            .invoiceEntries(List.of(firstEntry))
+            .build()
 
-    static InvoiceEntry fifthEntry = new InvoiceEntry("Third product", BigDecimal.ONE, BigDecimal.valueOf(10000), BigDecimal.valueOf(10000 * 0.23), Vat.Vat_23, secondCar)
+    static Invoice secondInvoice = Invoice.builder()
+            .date(LocalDate.of(2022, 10, 1))
+            .number("2022/10/12/00002")
+            .seller(secondCompany.get())
+            .buyer(firstCompany.get())
+            .invoiceEntries(List.of(secondEntry))
+            .build()
 
+    static Invoice thirdInvoice = Invoice.builder()
+            .date(LocalDate.of(2022, 10, 1))
+            .number("2022/10/12/00003")
+            .seller(firstCompany.get())
+            .buyer(secondCompany.get())
+            .invoiceEntries(List.of(firstEntry, secondEntry))
+            .build()
 
-    static Invoice firstInvoice = new Invoice(LocalDate.of(2022, 10, 1), firstCompany, secondCompany, List.of(firstEntry))
+    static Invoice fourthInvoice = Invoice.builder()
+            .date(LocalDate.of(2022, 10, 1))
+            .number("2022/10/12/00004")
+            .seller(secondCompany.get())
+            .buyer(firstCompany.get())
+            .invoiceEntries(List.of(thirdEntry))
+            .build()
 
-    static Invoice secondInvoice = new Invoice(LocalDate.of(2022, 10, 1), secondCompany, firstCompany, List.of(secondEntry))
+    static Invoice fifthInvoice = Invoice.builder()
+            .date(LocalDate.of(2022, 10, 1))
+            .number("2022/10/12/00005")
+            .seller(secondCompany.get())
+            .buyer(firstCompany.get())
+            .invoiceEntries(List.of(fourthEntry))
+            .build()
 
-    static Invoice thirdInvoice = new Invoice(LocalDate.of(2022, 10, 1), firstCompany, secondCompany, List.of(firstEntry, secondEntry))
+    static Invoice resetIds(Invoice invoice) {
+        invoice.getBuyer().id = null
+        invoice.getSeller().id = null
+        invoice.invoiceEntries.forEach {
+            it.id = null
+            it.expenseRelatedToCar?.id = null
+        }
+        invoice
+    }
 
-    static Invoice fourthInvoice = new Invoice(LocalDate.of(2022, 10, 1), secondCompany, firstCompany, List.of(thirdEntry))
-
-    static Invoice fifthInvoice = new Invoice(LocalDate.of(2022, 10, 1), secondCompany, firstCompany, List.of(fifthEntry))
+    static List<Invoice> resetIds(List<Invoice> invoices) {
+        invoices.forEach { invoice -> resetIds(invoice) }
+    }
 
 }

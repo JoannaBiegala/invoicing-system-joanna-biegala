@@ -9,8 +9,26 @@ import pl.futurecollars.invoice.utils.JsonService;
 public class BeanTestConfiguration {
 
   @Bean
-  @ConditionalOnProperty(value = "database.type", havingValue = "in-memory")
-  public JsonService jsonService() {
+  @ConditionalOnProperty(value = "database.type", havingValue = "memory")
+  public JsonService jsonInMemoryService() {
+    return new JsonService();
+  }
+
+  @Bean
+  @ConditionalOnProperty(value = "database.type", havingValue = "sql")
+  public JsonService jsonSqlService() {
+    return new JsonService();
+  }
+
+  @Bean
+  @ConditionalOnProperty(value = "database.type", havingValue = "jpa")
+  public JsonService jsonJpaService() {
+    return new JsonService();
+  }
+
+  @Bean
+  @ConditionalOnProperty(value = "database.type", havingValue = "mongo")
+  public JsonService jsonMongoService() {
     return new JsonService();
   }
 
