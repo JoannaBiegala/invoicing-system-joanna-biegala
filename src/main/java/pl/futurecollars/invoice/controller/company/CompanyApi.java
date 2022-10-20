@@ -10,30 +10,30 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import pl.futurecollars.invoice.model.Company;
 
+@RequestMapping(value = "/companies", produces = {"application/json;charset=UTF-8"})
 @Api(tags = {"company-controller"})
 public interface CompanyApi {
 
-  String COMPANIES_ENDPOINT = "/companies";
-
   @ApiOperation(value = "Get company with given id")
-  @GetMapping(value = COMPANIES_ENDPOINT + "/{id}", produces = {"application/json;charset=UTF-8"})
+  @GetMapping(value = "/{id}")
   ResponseEntity<Company> getCompany(@PathVariable long id);
 
   @ApiOperation(value = "Get list of all companies")
-  @GetMapping(value = COMPANIES_ENDPOINT, produces = {"application/json;charset=UTF-8"})
+  @GetMapping
   List<Company> getAll();
 
   @ApiOperation(value = "Add new company to system")
-  @PostMapping(COMPANIES_ENDPOINT)
+  @PostMapping
   long saveCompany(@RequestBody Company company);
 
   @ApiOperation(value = "Delete company with given id")
-  @DeleteMapping(COMPANIES_ENDPOINT + "/{id}")
+  @DeleteMapping(value = "/{id}")
   ResponseEntity<?> deleteCompany(@PathVariable long id);
 
   @ApiOperation(value = "Update company with given id")
-  @PutMapping(COMPANIES_ENDPOINT + "/{id}")
+  @PutMapping(value = "/{id}")
   ResponseEntity<?> updateCompany(@RequestBody Company company, @PathVariable long id);
 }
