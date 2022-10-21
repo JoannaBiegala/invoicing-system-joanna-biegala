@@ -11,44 +11,42 @@ export class AppComponent {
 
   title: String = 'InvoicingApp';
 
-  companies: Company[] = [
-    {
-      "name": "first",
-      "taxIdentificationNumber": "tax",
-      "address": "aaa",
-      "pensionInsurance": 22.3,
-      "healthInsurance": 33.7
-    },
-    {
-      "name": "second",
-      "taxIdentificationNumber": "tax2",
-      "address": "aaa2",
-      "pensionInsurance": 222.3,
-      "healthInsurance": 233.7
-    }
-  ]
+  companies: Company[] = [];
 
-  newCompany: Company = {
-    "name": "",
-    "taxIdentificationNumber": "",
-    "address": "",
-    "pensionInsurance": 0,
-    "healthInsurance": 0
-  };
+  newCompany: Company = new Company("","","",0,0);
 
   onAddButtonClick() {
     this.companies.push(this.newCompany);
-    this.newCompany = {
-      "name": "",
-      "taxIdentificationNumber": "",
-      "address": "",
-      "pensionInsurance": 0,
-      "healthInsurance": 0
-    };
+    this.newCompany = new Company("","","",0,0);
   }
 
   deleteCompany(company: Company) {
     this.companies = this.companies.filter(c => c !== company);
+  }
+
+  triggerUpdate(company: Company) {
+    company.editedCompany = new Company(
+      company.taxIdentificationNumber,
+      company.address,
+      company.name,
+      company.pensionInsurance,
+      company.healthInsurance
+    )
+    company.editMode = true;
+  }
+
+  cancelCompanyUpdate(company: Company) {
+    company.editMode = false;
+  }
+
+  updateCompany(updatedCompany: Company) {
+      updatedCompany.taxIdentificationNumber = updatedCompany.editedCompany.taxIdentificationNumber
+      updatedCompany.address = updatedCompany.editedCompany.address
+      updatedCompany.name = updatedCompany.editedCompany.name
+      updatedCompany.pensionInsurance = updatedCompany.editedCompany.pensionInsurance
+      updatedCompany.healthInsurance = updatedCompany.editedCompany.healthInsurance
+
+      updatedCompany.editMode = false;
   }
 
 }
