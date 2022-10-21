@@ -8,11 +8,11 @@
     <th></th>
   </tr>
   <tr class="table-active">
-    <td><input [(ngModel)]="newCompany.taxIdentificationNumber" type="text" name="taxIdentificationNumber"></td>
-    <td><input [(ngModel)]="newCompany.address" type="text" name="address"></td>
-    <td><input [(ngModel)]="newCompany.name" type="text" name="name"></td>
-    <td><input [(ngModel)]="newCompany.pensionInsurance" type="number" name="pensionInsurance"></td>
-    <td><input [(ngModel)]="newCompany.healthInsurance" type="number" name="healthInsurance"></td>
+    <td><input [(ngModel)]="newCompany.taxIdentificationNumber" type="text" class="form-control" name="taxIdentificationNumber"></td>
+    <td><input [(ngModel)]="newCompany.address" type="text" class="form-control" name="address"></td>
+    <td><input [(ngModel)]="newCompany.name" type="text" class="form-control" name="name"></td>
+    <td><input [(ngModel)]="newCompany.pensionInsurance" class="form-control" type="number" name="pensionInsurance"></td>
+    <td><input [(ngModel)]="newCompany.healthInsurance" class="form-control" type="number" name="healthInsurance"></td>
     <td><input type="button" class="btn btn-primary btn-sm" value="Add company" (click)="onAddButtonClick()"></td>
   </tr>
   <tr *ngFor="let company of companies">
