@@ -1,16 +1,26 @@
-<table id="companies table" class="table table-striped">
-  <tr>
+<table id="companies table" class="table table-active">
+  <tr class="table-active">
     <th>Tax identification number</th>
     <th>Address</th>
     <th>Name</th>
     <th>Pension insurance</th>
     <th>Health insurance</th>
+    <th></th>
   </tr>
-  <tr *ngFor="let company of companies">
+  <tr *ngFor="let company of companies" class="table-warning">
     <td>{{ company.taxIdentificationNumber}}</td>
     <td>{{ company.address}}</td>
-    <td>{{ company.Name}}</td>
+    <td>{{ company.name}}</td>
     <td>{{ company.pensionInsurance}}</td>
     <td>{{ company.healthInsurance}}</td>
+    <td class="table-active"><input type="button" class="btn btn-danger btn-sm" value="Delete" (click)="deleteCompany(company)"></td>
+  </tr>
+  <tr class="table-active">
+    <td><input [(ngModel)]="newCompany.taxIdentificationNumber" type="text" name="taxIdentificationNumber"></td>
+    <td><input [(ngModel)]="newCompany.name" type="text" name="address"></td>
+    <td><input [(ngModel)]="newCompany.name" type="text" name="name"></td>
+    <td><input [(ngModel)]="newCompany.pensionInsurance" type="number" name="pensionInsurance"></td>
+    <td><input [(ngModel)]="newCompany.healthInsurance" type="number" name="healthInsurance"></td>
+    <td><input type="button" class="btn btn-primary btn-sm" value="Add company" (click)="onAddButtonClick()"></td>
   </tr>
 </table>
