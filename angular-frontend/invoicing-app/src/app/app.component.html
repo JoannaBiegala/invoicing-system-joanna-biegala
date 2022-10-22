@@ -13,7 +13,7 @@
     <td><input [(ngModel)]="newCompany.name" type="text" class="form-control" name="name"></td>
     <td><input [(ngModel)]="newCompany.pensionInsurance" class="form-control" type="number" name="pensionInsurance"></td>
     <td><input [(ngModel)]="newCompany.healthInsurance" class="form-control" type="number" name="healthInsurance"></td>
-    <td><input type="button" class="btn btn-primary btn-sm" value="Add company" (click)="onAddButtonClick()"></td>
+    <td><input type="button" class="btn btn-primary btn-sm" value="Add company" (click)="onAddButtonClick()" id="addCompanyBtn"></td>
   </tr>
   <tr *ngFor="let company of companies">
     <td *ngIf="!company.editMode">{{company.taxIdentificationNumber}}</td>
