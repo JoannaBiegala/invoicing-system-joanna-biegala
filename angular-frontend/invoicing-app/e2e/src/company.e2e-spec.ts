@@ -5,6 +5,17 @@ import {CompanyRow} from "./companyRow.po";
 describe('Company page E2E test', () => {
   let page: CompanyPage;
 
+   beforeAll(async () => {
+    page = new CompanyPage();
+    await page.navigateTo();
+
+    await page.companyRows()
+      .each(async (row) => {
+        let companyRow = new CompanyRow(row);
+        await companyRow.deleteBtn().click()
+      })
+  });
+  
   beforeEach(async () => {
     page = new CompanyPage();
     await page.navigateTo();
