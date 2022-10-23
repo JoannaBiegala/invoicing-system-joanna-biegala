@@ -42,7 +42,6 @@ describe('AppComponent', () => {
   it('should display list of companies', () => {
     expect(fixture.nativeElement.innerText).toContain("111-111-111	First Street 1	First Company	1000.11	100.11");
     expect(fixture.nativeElement.innerText).toContain("222-222-222	Second Street 2	Second Company	2000.22	200.22");
-    //expect(component.companies.length).toEqual(2);
     expect(component.companies).toEqual(MockCompanyService.companies)
   });
 
@@ -71,7 +70,7 @@ describe('AppComponent', () => {
     addCompanyBtn.click()
 
     fixture.detectChanges();
-
+    expect(component.companies.length).toEqual(3);
     expect(fixture.nativeElement.innerText).toContain("333-333-333	Third Street 3	Third Company	3000.33	300.33")
   });
 
