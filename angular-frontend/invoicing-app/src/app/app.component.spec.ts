@@ -1,11 +1,10 @@
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { FormsModule } from "@angular/forms";
+import { FormsModule } from '@angular/forms';
 import { Company } from './company';
-import { CompanyService } from './CompanyService';
+import { CompanyService } from './company.service';
 import { Observable, of } from 'rxjs';
 import { OnInit } from '@angular/core';
-
 
 describe('AppComponent', () => {
   let fixture: ComponentFixture<AppComponent>;

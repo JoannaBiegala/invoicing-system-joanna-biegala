@@ -3,10 +3,13 @@ import { Observable } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../environments/environment';
 import { Company } from './company';
+
 const PATH = 'companies';
+
 @Injectable({
     providedIn: 'root'
 })
+
 export class CompanyService {
     private contentType = {
         headers: new HttpHeaders({ 'Content-Type': 'application/json' })

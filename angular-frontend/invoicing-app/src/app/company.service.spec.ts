@@ -1,8 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { CompanyService } from './company.service';
 import { Company } from './company';
-import { HttpClient } from "@angular/common/http";
-import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
+import { HttpClient } from '@angular/common/http';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { environment } from 'src/environments/environment';
 
 describe('Company Service Test', () => {
