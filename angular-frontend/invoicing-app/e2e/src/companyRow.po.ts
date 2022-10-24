@@ -59,7 +59,7 @@ export class CompanyRow {
   }
 
   private confirmUpdateCompanyBtn() {
-    return this.companyRow.element(by.css('.btn-primary'));
+    return this.companyRow.element(by.id('updateBtn'));
   }
 
   private updateHealthInsuranceInput() {
@@ -83,6 +83,6 @@ export class CompanyRow {
   }
 
   private editBtn() {
-    return this.companyRow.element(by.css('.btn-secondary'));
+    return this.companyRow.element(by.id('editBtn'));
   }
 }

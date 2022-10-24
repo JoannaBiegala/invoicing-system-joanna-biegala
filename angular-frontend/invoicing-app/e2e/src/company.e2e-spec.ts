@@ -4,7 +4,7 @@ import {CompanyRow} from "./companyRow.po";
 
 describe('Company page E2E test', () => {
   let page: CompanyPage;
-  
+
   beforeEach(async () => {
     page = new CompanyPage();
     await page.navigateTo();
