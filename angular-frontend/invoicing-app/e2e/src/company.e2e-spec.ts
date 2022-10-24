@@ -4,17 +4,6 @@ import {CompanyRow} from "./companyRow.po";
 
 describe('Company page E2E test', () => {
   let page: CompanyPage;
-
-   beforeAll(async () => {
-    page = new CompanyPage();
-    await page.navigateTo();
-
-    await page.companyRows()
-      .each(async (row) => {
-        let companyRow = new CompanyRow(row);
-        await companyRow.deleteBtn().click()
-      })
-  });
   
   beforeEach(async () => {
     page = new CompanyPage();
@@ -69,6 +58,7 @@ describe('Company page E2E test', () => {
     await page.companyRows().then(async rows => {
       const companyRow = new CompanyRow(rows[0]);
       await companyRow.updateCompany("333-222-111", "Ul. Wrocławska 56", "New Vision", 2111, 567)
+      browser.wait(ExpectedConditions.not(ExpectedConditions.presenceOf(page.anyCompanyRow())));
       await companyRow.assertRowValues("333-222-111", "Ul. Wrocławska 56", "New Vision", "2111", "567")
     })
   });
