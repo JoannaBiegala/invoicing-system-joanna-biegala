@@ -11,8 +11,10 @@ const PATH = 'companies';
 })
 
 export class CompanyService {
+
     private contentType = {
-        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
+        withCredentials: true
     };
     constructor(private http: HttpClient) {
     }
