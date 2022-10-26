@@ -18,7 +18,7 @@ public class WebSecurityConfiguration {
   @Autowired
   private CorsFilter corsFilter;
 
-  @Value("${invoicing-system.csrf.disable}")
+  @Value("${csrf.disable}")
   private boolean disableCsrf;
 
   @Bean

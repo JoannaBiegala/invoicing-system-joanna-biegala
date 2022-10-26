@@ -12,7 +12,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @Component
 public class CorsFilter extends OncePerRequestFilter {
 
-  @Value("${invoicing-system.allowedOrigins}")
+  @Value("${allowedOrigins}")
   private String allowedOrigins;
 
   @Override
