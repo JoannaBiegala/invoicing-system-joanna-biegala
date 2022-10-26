@@ -19,13 +19,13 @@ export class CompanyService {
     constructor(private http: HttpClient) {
     }
     getCompanies(): Observable<Company[]> {
-        return this.http.get<Company[]>(this.apiUrl(PATH));
+        return this.http.get<Company[]>(this.apiUrl(PATH), {withCredentials: true});
     }
     addCompany(company: Company): Observable<any> {
         return this.http.post<any>(this.apiUrl(PATH), this.toCompanyRequest(company), this.contentType);
     }
     deleteCompany(id: number): Observable<any> {
-        return this.http.delete<any>(this.apiUrl(PATH, id));
+        return this.http.delete<any>(this.apiUrl(PATH, id), {withCredentials: true});
     }
     editCompany(company: Company): Observable<any> {
         return this.http.put<Company>(this.apiUrl(PATH, company.id), this.toCompanyRequest(company), this.contentType);
