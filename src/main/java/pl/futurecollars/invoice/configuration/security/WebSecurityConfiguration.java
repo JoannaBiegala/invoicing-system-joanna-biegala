@@ -42,7 +42,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   public void configure(WebSecurity webSecurity) throws Exception {
     webSecurity.ignoring()
         .antMatchers("/v2/api-docs", "/swagger-resources", "/swagger-ui.html")
-        .antMatchers("/companies", "/invoices", "/tax");
+        .antMatchers("/companies","/companies/*", "/invoices","/invoices/*","/tax");
   }
 
 }
