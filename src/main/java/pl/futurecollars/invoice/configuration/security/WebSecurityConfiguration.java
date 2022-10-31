@@ -25,8 +25,10 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity http) throws Exception {
     http
         .authorizeRequests()
-        .and()
-        .authorizeRequests().anyRequest().authenticated().and()
+        .antMatchers("/v2/api-docs", "/swagger-resources", "/swagger-ui.html", "/swagger-ui/**","/swagger*/**")
+        .permitAll()
+        .anyRequest()
+        .authenticated().and()
         .httpBasic()
         .and()
         .addFilterBefore(corsFilter, ChannelProcessingFilter.class);
@@ -37,12 +39,4 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
       http.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()));
     }
   }
-
-  @Override
-  public void configure(WebSecurity webSecurity) throws Exception {
-    webSecurity.ignoring()
-        .antMatchers("/v2/api-docs", "/swagger-resources", "/swagger-ui.html")
-        .antMatchers("/companies","/companies/*", "/invoices","/invoices/*","/tax");
-  }
-
 }
